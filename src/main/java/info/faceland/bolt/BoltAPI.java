@@ -40,8 +40,11 @@ public class BoltAPI {
     }
 
     public static boolean isChestOwner(Chest chest, Player opener) {
-        if (chest == null || opener.hasPermission("bolt.anylock")) {
+        if (chest == null) {
             return false;
+        }
+        if (opener.hasPermission("bolt.anylock")) {
+            return true;
         }
         Inventory inventory = chest.getBlockInventory();
         ItemStack itemStack = inventory.getItem(inventory.getSize() - 1);

@@ -74,20 +74,21 @@ public class BoltListener implements Listener {
             return;
         }
         HiltItemStack his = new HiltItemStack(itemStack);
-        if (his.getName().equals(ChatColor.GOLD + "Chest Status: " + ChatColor.RED + "Locked") && BoltAPI.isChestOwner(
-                (Chest)event.getInventory().getHolder(), (Player)event.getWhoClicked())) {
-            his.setName(ChatColor.GOLD + "Chest Status: " + ChatColor.GREEN + "Unlocked");
-            event.setCurrentItem(his);
+        if (his.getName().equals(ChatColor.GOLD + "Chest Status: " + ChatColor.RED + "Locked")) {
             event.setCancelled(true);
             event.setResult(Event.Result.DENY);
-            return;
+        } else if (his.getName().equals(ChatColor.GOLD + "Chest Status: " + ChatColor.GREEN + "Unlocked")) {
+            event.setCancelled(true);
+            event.setResult(Event.Result.DENY);
         }
-        if (his.getName().equals(ChatColor.GOLD + "Chest Status: " + ChatColor.GREEN + "Unlocked") && BoltAPI.isChestOwner(
-                (Chest)event.getInventory().getHolder(), (Player)event.getWhoClicked())) {
-            his.setName(ChatColor.GOLD + "Chest Status: " + ChatColor.RED + "Locked");
-            event.setCurrentItem(his);
-            event.setCancelled(true);
-            event.setResult(Event.Result.DENY);
+        if (BoltAPI.isChestOwner((Chest) event.getInventory().getHolder(), (Player) event.getWhoClicked())) {
+            if (his.getName().equals(ChatColor.GOLD + "Chest Status: " + ChatColor.RED + "Locked")) {
+                his.setName(ChatColor.GOLD + "Chest Status: " + ChatColor.GREEN + "Unlocked");
+                event.setCurrentItem(his);
+            } else if (his.getName().equals(ChatColor.GOLD + "Chest Status: " + ChatColor.GREEN + "Unlocked")) {
+                his.setName(ChatColor.GOLD + "Chest Status: " + ChatColor.RED + "Locked");
+                event.setCurrentItem(his);
+            }
         }
     }
 
