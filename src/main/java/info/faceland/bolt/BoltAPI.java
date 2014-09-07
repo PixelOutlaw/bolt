@@ -43,20 +43,40 @@ public class BoltAPI {
     }
 
     public static boolean isChestOwner(Chest chest, Player opener) {
+        String owner = getChestOwnerName(chest);
+        return !(owner == null || opener == null) && owner.equals(opener.getName());
+    }
+
+    public static String getChestOwnerName(Chest chest) {
         if (chest == null) {
-            return false;
-        }
-        if (opener.hasPermission("bolt.anylock")) {
-            return true;
+            return null;
         }
         Inventory inventory = chest.getBlockInventory();
         ItemStack itemStack = inventory.getItem(inventory.getSize() - 1);
         if (itemStack == null || itemStack.getType() != Material.PAPER) {
-            return false;
+            return null;
         }
         HiltItemStack hiltItemStack = new HiltItemStack(itemStack);
-        String line1 = ChatColor.stripColor(hiltItemStack.getLore().get(1)).replace("Owner: ", "").trim();
-        return line1.equals(opener.getName());
+        return ChatColor.stripColor(hiltItemStack.getLore().get(1)).replace("Owner: ", "").trim();
+    }
+
+    public static void setChestOwner(Chest chest, Player owner) {
+        if (chest == null || owner == null) {
+            return;
+        }
+        Inventory inventory = chest.getBlockInventory();
+        ItemStack itemStack = inventory.getItem(inventory.getSize() - 1);
+        if (itemStack == null || itemStack.getType() != Material.PAPER) {
+            return;
+        }
+        HiltItemStack hiltItemStack = new HiltItemStack(itemStack);
+        if (!hiltItemStack.getName().startsWith(ChatColor.GOLD + "Chest Status:")) {
+            return;
+        }
+        List<String> lore = hiltItemStack.getLore();
+        lore.set(1, ChatColor.GOLD + "Owner: " + ChatColor.WHITE + owner.getName());
+        hiltItemStack.setLore(lore);
+        inventory.setItem(inventory.getSize() - 1, hiltItemStack);
     }
 
     public static List<String> getAllowedUsers(Chest chest) {
