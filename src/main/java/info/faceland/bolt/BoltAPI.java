@@ -31,7 +31,26 @@ public class BoltAPI {
         if (line1.equals(opener.getName())) {
             return false;
         }
+        for (String s : hiltItemStack.getLore()) {
+            if (ChatColor.stripColor(s).equals(opener.getName())) {
+                return false;
+            }
+        }
         return true;
+    }
+
+    public static boolean isChestOwner(Chest chest, Player opener) {
+        if (chest == null || opener.hasPermission("bolt.anylock")) {
+            return false;
+        }
+        Inventory inventory = chest.getBlockInventory();
+        ItemStack itemStack = inventory.getItem(inventory.getSize() - 1);
+        if (itemStack == null || itemStack.getType() != Material.PAPER) {
+            return false;
+        }
+        HiltItemStack hiltItemStack = new HiltItemStack(itemStack);
+        String line1 = ChatColor.stripColor(hiltItemStack.getLore().get(1)).replace("Owner: ", "").trim();
+        return !line1.equals(opener.getName());
     }
 
 }

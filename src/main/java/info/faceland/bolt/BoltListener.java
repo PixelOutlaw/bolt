@@ -11,6 +11,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.entity.ItemSpawnEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.inventory.ItemStack;
@@ -65,23 +66,40 @@ public class BoltListener implements Listener {
 
     @EventHandler(priority = EventPriority.LOWEST)
     public void onInventoryClick(InventoryClickEvent event) {
+        if (!(event.getInventory().getHolder() instanceof Chest) || !(event.getWhoClicked() instanceof Player)) {
+            return;
+        }
         ItemStack itemStack = event.getCurrentItem();
         if (itemStack == null || itemStack.getType() != Material.PAPER) {
             return;
         }
         HiltItemStack his = new HiltItemStack(itemStack);
-        if (his.getName().equals(ChatColor.GOLD + "Chest Status: " + ChatColor.RED + "Locked")) {
+        if (his.getName().equals(ChatColor.GOLD + "Chest Status: " + ChatColor.RED + "Locked") && BoltAPI.isChestOwner(
+                (Chest)event.getInventory().getHolder(), (Player)event.getWhoClicked())) {
             his.setName(ChatColor.GOLD + "Chest Status: " + ChatColor.GREEN + "Unlocked");
             event.setCurrentItem(his);
             event.setCancelled(true);
             event.setResult(Event.Result.DENY);
             return;
         }
-        if (his.getName().equals(ChatColor.GOLD + "Chest Status: " + ChatColor.GREEN + "Unlocked")) {
+        if (his.getName().equals(ChatColor.GOLD + "Chest Status: " + ChatColor.GREEN + "Unlocked") && BoltAPI.isChestOwner(
+                (Chest)event.getInventory().getHolder(), (Player)event.getWhoClicked())) {
             his.setName(ChatColor.GOLD + "Chest Status: " + ChatColor.RED + "Locked");
             event.setCurrentItem(his);
             event.setCancelled(true);
             event.setResult(Event.Result.DENY);
+        }
+    }
+
+    @EventHandler(priority = EventPriority.LOWEST)
+    public void onItemSpawn(ItemSpawnEvent event) {
+        ItemStack itemStack = event.getEntity().getItemStack();
+        HiltItemStack his = new HiltItemStack(itemStack);
+        if (his.getName().equals(ChatColor.GOLD + "Chest Status: " + ChatColor.RED + "Locked")) {
+            event.setCancelled(true);
+        }
+        if (his.getName().equals(ChatColor.GOLD + "Chest Status: " + ChatColor.GREEN + "Unlocked")) {
+            event.setCancelled(true);
         }
     }
 
