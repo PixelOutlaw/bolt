@@ -6,6 +6,14 @@ depends: [Facecore]
 permissions:
   bolt.anylock:
     default: op
+  bolt.add:
+    default: true
+  bolt.remove:
+    default: true
+  bolt.makenormal:
+    default: true
+  bolt.setowner:
+    default: op
 
 commands:
   locks:
