@@ -8,6 +8,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class BoltAPI {
 
     private BoltAPI() {
@@ -54,6 +57,59 @@ public class BoltAPI {
         HiltItemStack hiltItemStack = new HiltItemStack(itemStack);
         String line1 = ChatColor.stripColor(hiltItemStack.getLore().get(1)).replace("Owner: ", "").trim();
         return line1.equals(opener.getName());
+    }
+
+    public static List<String> getAllowedUsers(Chest chest) {
+        if (chest == null) {
+            return new ArrayList<>();
+        }
+        Inventory inventory = chest.getBlockInventory();
+        ItemStack itemStack = inventory.getItem(inventory.getSize() - 1);
+        if (itemStack == null || itemStack.getType() != Material.PAPER) {
+            return new ArrayList<>();
+        }
+        HiltItemStack hiltItemStack = new HiltItemStack(itemStack);
+        if (!hiltItemStack.getName().startsWith(ChatColor.GOLD + "Chest Status:")) {
+            return new ArrayList<>();
+        }
+        List<String> allowed = new ArrayList<>();
+        if (hiltItemStack.getLore().size() == 3) {
+            allowed.add(hiltItemStack.getLore().get(2));
+            return allowed;
+        }
+        if (hiltItemStack.getLore().get(2).equals(ChatColor.GRAY + "Type /add <playername> while looking")) {
+            return allowed;
+        }
+        List<String> subList = hiltItemStack.getLore().subList(2, hiltItemStack.getLore().size());
+        for (String s : subList) {
+           allowed.add(ChatColor.stripColor(s));
+        }
+        return allowed;
+    }
+
+    public static void setAllowedUsers(Chest chest, List<String> users) {
+        if (chest == null) {
+            return;
+        }
+        Inventory inventory = chest.getBlockInventory();
+        ItemStack itemStack = inventory.getItem(inventory.getSize() - 1);
+        if (itemStack == null || itemStack.getType() != Material.PAPER) {
+            return;
+        }
+        HiltItemStack hiltItemStack = new HiltItemStack(itemStack);
+        if (!hiltItemStack.getName().startsWith(ChatColor.GOLD + "Chest Status:")) {
+            return;
+        }
+        String owner = ChatColor.stripColor(hiltItemStack.getLore().get(1)).replace("Owner: ", "").trim();
+        List<String> lore = hiltItemStack.getLore();
+        lore.clear();
+        lore.add(ChatColor.WHITE + "< Click to Toggle >");
+        lore.add(ChatColor.GOLD + "Owner: " + ChatColor.WHITE + owner);
+        for (String s : users) {
+            lore.add(ChatColor.WHITE + s);
+        }
+        hiltItemStack.setLore(lore);
+        inventory.setItem(inventory.getSize() - 1, hiltItemStack);
     }
 
 }
