@@ -50,7 +50,7 @@ public class BoltAPI {
         }
         HiltItemStack hiltItemStack = new HiltItemStack(itemStack);
         String line1 = ChatColor.stripColor(hiltItemStack.getLore().get(1)).replace("Owner: ", "").trim();
-        return !line1.equals(opener.getName());
+        return line1.equals(opener.getName());
     }
 
 }
