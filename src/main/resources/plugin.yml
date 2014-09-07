@@ -6,3 +6,7 @@ depends: [Facecore]
 permissions:
   bolt.anylock:
     default: op
+
+commands:
+  locks:
+    aliases: [l]
