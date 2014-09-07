@@ -82,7 +82,7 @@ public class BoltAPI {
         }
         List<String> subList = hiltItemStack.getLore().subList(2, hiltItemStack.getLore().size());
         for (String s : subList) {
-           allowed.add(ChatColor.stripColor(s));
+            allowed.add(ChatColor.stripColor(s));
         }
         return allowed;
     }
@@ -105,8 +105,13 @@ public class BoltAPI {
         lore.clear();
         lore.add(ChatColor.WHITE + "< Click to Toggle >");
         lore.add(ChatColor.GOLD + "Owner: " + ChatColor.WHITE + owner);
-        for (String s : users) {
-            lore.add(ChatColor.WHITE + s);
+        if (users.size() > 0) {
+            for (String s : users) {
+                lore.add(ChatColor.WHITE + s);
+            }
+        } else {
+            lore.add(ChatColor.GRAY + "Type /add <playername> while looking");
+            lore.add(ChatColor.GRAY + "at this chest to allow people to use it.");
         }
         hiltItemStack.setLore(lore);
         inventory.setItem(inventory.getSize() - 1, hiltItemStack);
