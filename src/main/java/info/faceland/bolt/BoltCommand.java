@@ -1,5 +1,6 @@
 package info.faceland.bolt;
 
+import info.faceland.facecore.shade.command.Arg;
 import info.faceland.facecore.shade.command.Command;
 import org.bukkit.ChatColor;
 import org.bukkit.block.Block;
@@ -11,7 +12,7 @@ import java.util.List;
 public class BoltCommand {
 
     @Command(identifier = "locks add", permissions = "bolt.add")
-    public void addSubcommand(Player sender, Player target) {
+    public void addSubcommand(Player sender, @Arg(name = "target") Player target) {
         Block b = sender.getTargetBlock(null, 10);
         if (b == null || !(b.getState() instanceof Chest)) {
             sender.sendMessage(ChatColor.RED + "You cannot add to that.");
@@ -35,7 +36,7 @@ public class BoltCommand {
     }
 
     @Command(identifier = "locks remove", permissions = "bolt.remove")
-    public void removeSubcommand(Player sender, Player target) {
+    public void removeSubcommand(Player sender, @Arg(name = "target") Player target) {
         Block b = sender.getTargetBlock(null, 10);
         if (b == null || !(b.getState() instanceof Chest)) {
             sender.sendMessage(ChatColor.RED + "You cannot remove from that.");
@@ -71,7 +72,7 @@ public class BoltCommand {
     }
 
     @Command(identifier = "locks setowner", permissions = "bolt.setowner")
-    public void setOwnerSubcommand(Player sender, Player target) {
+    public void setOwnerSubcommand(Player sender, @Arg(name = "target") Player target) {
         Block b = sender.getTargetBlock(null, 10);
         if (b == null || !(b.getState() instanceof Chest)) {
             sender.sendMessage(ChatColor.RED + "You cannot set an owner.");
