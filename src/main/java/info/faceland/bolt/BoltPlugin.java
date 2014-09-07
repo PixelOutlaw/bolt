@@ -3,6 +3,7 @@ package info.faceland.bolt;
 import info.faceland.api.FacePlugin;
 import info.faceland.facecore.shade.command.CommandHandler;
 import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.event.HandlerList;
 
 public class BoltPlugin extends FacePlugin {
@@ -15,7 +16,9 @@ public class BoltPlugin extends FacePlugin {
     @Override
     public void enable() {
         Bukkit.getPluginManager().registerEvents(new BoltListener(this), this);
-        new CommandHandler(this).registerCommands(new BoltCommand());
+        CommandHandler commandHandler = new CommandHandler(this);
+        commandHandler.registerArgumentHandler(OfflinePlayer.class, new OfflinePlayerArgumentHandler());
+        commandHandler.registerCommands(new BoltCommand());
     }
 
     @Override

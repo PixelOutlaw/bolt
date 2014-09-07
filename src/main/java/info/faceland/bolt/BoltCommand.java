@@ -3,6 +3,7 @@ package info.faceland.bolt;
 import info.faceland.facecore.shade.command.Arg;
 import info.faceland.facecore.shade.command.Command;
 import org.bukkit.ChatColor;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.block.Block;
 import org.bukkit.block.Chest;
 import org.bukkit.entity.Player;
@@ -12,7 +13,7 @@ import java.util.List;
 public class BoltCommand {
 
     @Command(identifier = "locks add", permissions = "bolt.add")
-    public void addSubcommand(Player sender, @Arg(name = "target") Player target) {
+    public void addSubcommand(Player sender, @Arg(name = "target") OfflinePlayer target) {
         Block b = sender.getTargetBlock(null, 10);
         if (b == null || !(b.getState() instanceof Chest)) {
             sender.sendMessage(ChatColor.RED + "You cannot add to that.");
@@ -31,12 +32,12 @@ public class BoltCommand {
         allowed.add(target.getName());
         BoltAPI.setAllowedUsers(chest, allowed);
         sender.sendMessage(
-                ChatColor.GREEN + "You added " + ChatColor.WHITE + target.getDisplayName() + ChatColor.GREEN +
+                ChatColor.GREEN + "You added " + ChatColor.WHITE + target.getName() + ChatColor.GREEN +
                         " to your chest.");
     }
 
     @Command(identifier = "locks remove", permissions = "bolt.remove")
-    public void removeSubcommand(Player sender, @Arg(name = "target") Player target) {
+    public void removeSubcommand(Player sender, @Arg(name = "target") OfflinePlayer target) {
         Block b = sender.getTargetBlock(null, 10);
         if (b == null || !(b.getState() instanceof Chest)) {
             sender.sendMessage(ChatColor.RED + "You cannot remove from that.");
@@ -51,7 +52,7 @@ public class BoltCommand {
         allowed.remove(target.getName());
         BoltAPI.setAllowedUsers(chest, allowed);
         sender.sendMessage(
-                ChatColor.GREEN + "You removed " + ChatColor.WHITE + target.getDisplayName() + ChatColor.GREEN +
+                ChatColor.GREEN + "You removed " + ChatColor.WHITE + target.getName() + ChatColor.GREEN +
                         " from your chest.");
     }
 
@@ -72,7 +73,7 @@ public class BoltCommand {
     }
 
     @Command(identifier = "locks setowner", permissions = "bolt.setowner")
-    public void setOwnerSubcommand(Player sender, @Arg(name = "target") Player target) {
+    public void setOwnerSubcommand(Player sender, @Arg(name = "target") OfflinePlayer target) {
         Block b = sender.getTargetBlock(null, 10);
         if (b == null || !(b.getState() instanceof Chest)) {
             sender.sendMessage(ChatColor.RED + "You cannot set an owner.");
@@ -80,7 +81,7 @@ public class BoltCommand {
         }
         Chest chest = (Chest) b.getState();
         BoltAPI.setChestOwner(chest, target);
-        sender.sendMessage(ChatColor.GREEN + "You made " + ChatColor.WHITE + target.getDisplayName() + ChatColor.GREEN +
+        sender.sendMessage(ChatColor.GREEN + "You made " + ChatColor.WHITE + target.getName() + ChatColor.GREEN +
                                    " the owner of that chest.");
     }
 

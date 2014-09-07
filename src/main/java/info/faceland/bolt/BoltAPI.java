@@ -3,6 +3,7 @@ package info.faceland.bolt;
 import info.faceland.hilt.HiltItemStack;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.block.Chest;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
@@ -42,7 +43,7 @@ public class BoltAPI {
         return true;
     }
 
-    public static boolean isChestOwner(Chest chest, Player opener) {
+    public static boolean isChestOwner(Chest chest, OfflinePlayer opener) {
         String owner = getChestOwnerName(chest);
         return !(owner == null || opener == null) && owner.equals(opener.getName());
     }
@@ -60,7 +61,7 @@ public class BoltAPI {
         return ChatColor.stripColor(hiltItemStack.getLore().get(1)).replace("Owner: ", "").trim();
     }
 
-    public static void setChestOwner(Chest chest, Player owner) {
+    public static void setChestOwner(Chest chest, OfflinePlayer owner) {
         if (chest == null || owner == null) {
             return;
         }
