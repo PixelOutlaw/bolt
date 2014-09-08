@@ -25,7 +25,7 @@ public class BoltCommand {
             return;
         }
         List<String> allowed = BoltAPI.getAllowedUsers(chest);
-        if (allowed.size() > 4) {
+        if (allowed.size() >= 4) {
             sender.sendMessage(ChatColor.RED + "You already have four people added to that chest.");
             return;
         }
