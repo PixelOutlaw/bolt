@@ -3,7 +3,6 @@ package info.faceland.bolt;
 import info.faceland.hilt.HiltItemStack;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.block.Chest;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
@@ -43,9 +42,9 @@ public class BoltAPI {
         return true;
     }
 
-    public static boolean isChestOwner(Chest chest, OfflinePlayer opener) {
+    public static boolean isChestOwner(Chest chest, String opener) {
         String owner = getChestOwnerName(chest);
-        return !(owner == null || opener == null) && owner.equals(opener.getName());
+        return !(owner == null || opener == null) && owner.equals(opener);
     }
 
     public static String getChestOwnerName(Chest chest) {
@@ -61,7 +60,7 @@ public class BoltAPI {
         return ChatColor.stripColor(hiltItemStack.getLore().get(1)).replace("Owner: ", "").trim();
     }
 
-    public static void setChestOwner(Chest chest, OfflinePlayer owner) {
+    public static void setChestOwner(Chest chest, String owner) {
         if (chest == null || owner == null) {
             return;
         }
@@ -75,7 +74,7 @@ public class BoltAPI {
             return;
         }
         List<String> lore = hiltItemStack.getLore();
-        lore.set(1, ChatColor.GOLD + "Owner: " + ChatColor.WHITE + owner.getName());
+        lore.set(1, ChatColor.GOLD + "Owner: " + ChatColor.WHITE + owner);
         hiltItemStack.setLore(lore);
         inventory.setItem(inventory.getSize() - 1, hiltItemStack);
     }

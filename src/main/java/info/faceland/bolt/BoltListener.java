@@ -81,7 +81,7 @@ public class BoltListener implements Listener {
             event.setCancelled(true);
             event.setResult(Event.Result.DENY);
         }
-        if (BoltAPI.isChestOwner((Chest) event.getInventory().getHolder(), (Player) event.getWhoClicked())) {
+        if (BoltAPI.isChestOwner((Chest) event.getInventory().getHolder(), event.getWhoClicked().getName())) {
             if (his.getName().equals(ChatColor.GOLD + "Chest Status: " + ChatColor.RED + "Locked")) {
                 his.setName(ChatColor.GOLD + "Chest Status: " + ChatColor.GREEN + "Unlocked");
                 event.setCurrentItem(his);

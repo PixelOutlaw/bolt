@@ -3,7 +3,6 @@ package info.faceland.bolt;
 import info.faceland.facecore.shade.command.Arg;
 import info.faceland.facecore.shade.command.Command;
 import org.bukkit.ChatColor;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.block.Block;
 import org.bukkit.block.Chest;
 import org.bukkit.entity.Player;
@@ -13,14 +12,14 @@ import java.util.List;
 public class BoltCommand {
 
     @Command(identifier = "locks add", permissions = "bolt.add")
-    public void addSubcommand(Player sender, @Arg(name = "target") OfflinePlayer target) {
+    public void addSubcommand(Player sender, @Arg(name = "target") String target) {
         Block b = sender.getTargetBlock(null, 10);
         if (b == null || !(b.getState() instanceof Chest)) {
             sender.sendMessage(ChatColor.RED + "You cannot add to that.");
             return;
         }
         Chest chest = (Chest) b.getState();
-        if (!BoltAPI.isChestOwner(chest, sender)) {
+        if (!BoltAPI.isChestOwner(chest, sender.getName())) {
             sender.sendMessage(ChatColor.RED + "You cannot add to that.");
             return;
         }
@@ -29,30 +28,30 @@ public class BoltCommand {
             sender.sendMessage(ChatColor.RED + "You already have four people added to that chest.");
             return;
         }
-        allowed.add(target.getName());
+        allowed.add(target.length() > 16 ? target.substring(0, 15) : target);
         BoltAPI.setAllowedUsers(chest, allowed);
         sender.sendMessage(
-                ChatColor.GREEN + "You added " + ChatColor.WHITE + target.getName() + ChatColor.GREEN +
+                ChatColor.GREEN + "You added " + ChatColor.WHITE + target + ChatColor.GREEN +
                         " to your chest.");
     }
 
     @Command(identifier = "locks remove", permissions = "bolt.remove")
-    public void removeSubcommand(Player sender, @Arg(name = "target") OfflinePlayer target) {
+    public void removeSubcommand(Player sender, @Arg(name = "target") String target) {
         Block b = sender.getTargetBlock(null, 10);
         if (b == null || !(b.getState() instanceof Chest)) {
             sender.sendMessage(ChatColor.RED + "You cannot remove from that.");
             return;
         }
         Chest chest = (Chest) b.getState();
-        if (!BoltAPI.isChestOwner(chest, sender)) {
+        if (!BoltAPI.isChestOwner(chest, sender.getName())) {
             sender.sendMessage(ChatColor.RED + "You cannot remove from that.");
             return;
         }
         List<String> allowed = BoltAPI.getAllowedUsers(chest);
-        allowed.remove(target.getName());
+        allowed.remove(target.length() > 16 ? target.substring(0, 15) : target);
         BoltAPI.setAllowedUsers(chest, allowed);
         sender.sendMessage(
-                ChatColor.GREEN + "You removed " + ChatColor.WHITE + target.getName() + ChatColor.GREEN +
+                ChatColor.GREEN + "You removed " + ChatColor.WHITE + target + ChatColor.GREEN +
                         " from your chest.");
     }
 
@@ -64,7 +63,7 @@ public class BoltCommand {
             return;
         }
         Chest chest = (Chest) b.getState();
-        if (!BoltAPI.isChestOwner(chest, sender)) {
+        if (!BoltAPI.isChestOwner(chest, sender.getName())) {
             sender.sendMessage(ChatColor.RED + "You cannot make that normal.");
             return;
         }
@@ -73,15 +72,15 @@ public class BoltCommand {
     }
 
     @Command(identifier = "locks setowner", permissions = "bolt.setowner")
-    public void setOwnerSubcommand(Player sender, @Arg(name = "target") OfflinePlayer target) {
+    public void setOwnerSubcommand(Player sender, @Arg(name = "target") String target) {
         Block b = sender.getTargetBlock(null, 10);
         if (b == null || !(b.getState() instanceof Chest)) {
             sender.sendMessage(ChatColor.RED + "You cannot set an owner.");
             return;
         }
         Chest chest = (Chest) b.getState();
-        BoltAPI.setChestOwner(chest, target);
-        sender.sendMessage(ChatColor.GREEN + "You made " + ChatColor.WHITE + target.getName() + ChatColor.GREEN +
+        BoltAPI.setChestOwner(chest, target.length() > 16 ? target.substring(0, 15) : target);
+        sender.sendMessage(ChatColor.GREEN + "You made " + ChatColor.WHITE + target + ChatColor.GREEN +
                                    " the owner of that chest.");
     }
 
