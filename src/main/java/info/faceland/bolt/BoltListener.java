@@ -91,7 +91,7 @@ public class BoltListener implements Listener {
         if (!BoltAPI.isChestOwner(((InventoryHolder) event.getBlock().getState()).getInventory(),
                                   event.getPlayer().getName())) {
             event.setCancelled(true);
-            event.getPlayer().sendMessage(ChatColor.RED + "You cannot break a locked chest.");
+            event.getPlayer().sendMessage(ChatColor.RED + "You cannot break this chest.");
             return;
         }
         InventoryHolder holder = (InventoryHolder) event.getBlock().getState();
@@ -112,7 +112,7 @@ public class BoltListener implements Listener {
             HiltItemStack hiltItemStack = new HiltItemStack(Material.PAPER);
             hiltItemStack.setName(ChatColor.GOLD + "Chest Status: " + ChatColor.RED + "Locked");
             List<String> lore = new ArrayList<>();
-            lore.add(ChatColor.WHITE + "< Click to Toggle >");
+            lore.add(ChatColor.WHITE + "<Click to Toggle>");
             lore.add(ChatColor.GOLD + "Owner: " + ChatColor.WHITE + event.getPlayer().getName());
             List<String> allowedUsers = BoltAPI.getAllowedUsers(holder.getInventory());
             if (allowedUsers.size() > 0) {
@@ -120,8 +120,8 @@ public class BoltListener implements Listener {
                     lore.add(ChatColor.WHITE + s);
                 }
             } else {
-                lore.add(ChatColor.GRAY + "Type /add <playername> while looking");
-                lore.add(ChatColor.GRAY + "at this chest to allow people to use it.");
+                lore.add(ChatColor.GRAY + "Type /add <playername> while looking at");
+                lore.add(ChatColor.GRAY + "this chest to allow people to use it.");
             }
             hiltItemStack.setLore(lore);
             holder.getInventory().setItem(holder.getInventory().getSize() / 2 - 1, hiltItemStack);
@@ -136,12 +136,12 @@ public class BoltListener implements Listener {
         if (event.getInventory().getHolder() instanceof Chest) {
             if (BoltAPI.isChestLocked(event.getInventory(), (Player) event.getPlayer())) {
                 event.setCancelled(true);
-                ((Player) event.getPlayer()).sendMessage(ChatColor.RED + "You cannot open a locked chest.");
+                ((Player) event.getPlayer()).sendMessage(ChatColor.YELLOW + "This chest is locked.");
             }
         } else if (event.getInventory().getHolder() instanceof DoubleChest) {
             if (BoltAPI.isChestLocked(event.getInventory(), (Player) event.getPlayer())) {
                 event.setCancelled(true);
-                ((Player) event.getPlayer()).sendMessage(ChatColor.RED + "You cannot open a locked chest.");
+                ((Player) event.getPlayer()).sendMessage(ChatColor.YELLOW + "This chest is locked.");
             }
         }
     }

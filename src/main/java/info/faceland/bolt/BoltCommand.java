@@ -15,12 +15,12 @@ public class BoltCommand {
     public void addSubcommand(Player sender, @Arg(name = "target") String target) {
         Block b = sender.getTargetBlock(null, 10);
         if (b == null || !(b.getState() instanceof Chest)) {
-            sender.sendMessage(ChatColor.RED + "You cannot add to that.");
+            sender.sendMessage(ChatColor.RED + "Add failed. That block is not a chest.");
             return;
         }
         Chest chest = (Chest) b.getState();
         if (!BoltAPI.isChestOwner(chest.getInventory(), sender.getName())) {
-            sender.sendMessage(ChatColor.RED + "You cannot add to that.");
+            sender.sendMessage(ChatColor.RED + "Add failed. You do not own that chest.");
             return;
         }
         List<String> allowed = BoltAPI.getAllowedUsers(chest.getInventory());
@@ -31,20 +31,20 @@ public class BoltCommand {
         allowed.add(target.length() > 16 ? target.substring(0, 15) : target);
         BoltAPI.setAllowedUsers(chest.getInventory(), allowed);
         sender.sendMessage(
-                ChatColor.GREEN + "You added " + ChatColor.WHITE + target + ChatColor.GREEN +
-                        " to your chest.");
+                ChatColor.GREEN + "Success! " + ChatColor.WHITE + target + ChatColor.GREEN +
+                        " can now use this chest.");
     }
 
     @Command(identifier = "locks remove", permissions = "bolt.remove")
     public void removeSubcommand(Player sender, @Arg(name = "target") String target) {
         Block b = sender.getTargetBlock(null, 10);
         if (b == null || !(b.getState() instanceof Chest)) {
-            sender.sendMessage(ChatColor.RED + "You cannot remove from that.");
+            sender.sendMessage(ChatColor.RED + "Remove failed. That block is not a chest.");
             return;
         }
         Chest chest = (Chest) b.getState();
         if (!BoltAPI.isChestOwner(chest.getInventory(), sender.getName())) {
-            sender.sendMessage(ChatColor.RED + "You cannot remove from that.");
+            sender.sendMessage(ChatColor.RED + "Remove failed. You do not own that chest.");
             return;
         }
         List<String> allowed = BoltAPI.getAllowedUsers(chest.getInventory());
@@ -52,7 +52,7 @@ public class BoltCommand {
         BoltAPI.setAllowedUsers(chest.getInventory(), allowed);
         sender.sendMessage(
                 ChatColor.GREEN + "You removed " + ChatColor.WHITE + target + ChatColor.GREEN +
-                        " from your chest.");
+                        "'s access to this chest.");
     }
 
     @Command(identifier = "locks makenormal", permissions = "bolt.makenormal")
