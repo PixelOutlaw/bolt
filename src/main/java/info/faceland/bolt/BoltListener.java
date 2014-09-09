@@ -46,7 +46,7 @@ public class BoltListener implements Listener {
             HiltItemStack hiltItemStack = new HiltItemStack(Material.PAPER);
             hiltItemStack.setName(ChatColor.GOLD + "Chest Status: " + ChatColor.RED + "Locked");
             List<String> lore = new ArrayList<>();
-            lore.add(ChatColor.WHITE + "< Click to Toggle >");
+            lore.add(ChatColor.WHITE + "<Click to Toggle>");
             lore.add(ChatColor.GOLD + "Owner: " + ChatColor.WHITE + event.getPlayer().getName());
             lore.add(ChatColor.GRAY + "Type /add <playername> while looking");
             lore.add(ChatColor.GRAY + "at this chest to allow people to use it.");
@@ -75,8 +75,8 @@ public class BoltListener implements Listener {
                     lore.add(ChatColor.WHITE + s);
                 }
             } else {
-                lore.add(ChatColor.GRAY + "Type /add <playername> while looking");
-                lore.add(ChatColor.GRAY + "at this chest to allow people to use it.");
+                lore.add(ChatColor.GRAY + "Type /add <playername> while looking at");
+                lore.add(ChatColor.GRAY + "this chest to allow people to use it.");
             }
             hiltItemStack.setLore(lore);
             chest.getInventory().setItem(chest.getInventory().getSize() - 1, hiltItemStack);
