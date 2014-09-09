@@ -3,10 +3,7 @@ package info.faceland.bolt;
 import info.faceland.hilt.HiltItemStack;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.block.BlockFace;
-import org.bukkit.block.Chest;
-import org.bukkit.block.DoubleChest;
-import org.bukkit.block.Hopper;
+import org.bukkit.block.*;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
@@ -42,58 +39,57 @@ public class BoltListener implements Listener {
         HiltItemStack his = new HiltItemStack(event.getItem());
         if (his.getName().startsWith(ChatColor.GOLD + "Chest Status:")) {
             event.setCancelled(true);
-            return;
         }
     }
 
     @EventHandler(priority = EventPriority.LOWEST)
     public void onBlockPlace(BlockPlaceEvent event) {
+        Block b = event.getBlockPlaced();
         if (event.getBlockPlaced().getState() instanceof Hopper) {
-            if (event.getBlockPlaced().getRelative(BlockFace.UP).getState() instanceof Chest) {
-                if (!BoltAPI.isChestOwner(
-                        ((Chest) event.getBlockPlaced().getRelative(BlockFace.UP).getState()).getInventory(),
-                        event.getPlayer().getName())) {
-                    event.setCancelled(true);
-                    event.getPlayer().sendMessage(ChatColor.YELLOW + "You cannot place hoppers under chests you do not own.");
-                }
-            } else if (event.getBlockPlaced().getRelative(BlockFace.UP).getState() instanceof DoubleChest) {
-                if (!BoltAPI.isChestOwner(
-                        ((DoubleChest) event.getBlockPlaced().getRelative(BlockFace.UP).getState()).getInventory(),
-                        event.getPlayer().getName())) {
-                    event.setCancelled(true);
-                    event.getPlayer().sendMessage(ChatColor.YELLOW + "You cannot place hoppers under chests you do not own.");
+            BlockFace[] check =
+                    {BlockFace.UP, BlockFace.DOWN, BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST};
+            for (BlockFace bf : check) {
+                if (b.getRelative(bf).getState() instanceof Chest) {
+                    if (!BoltAPI.isChestOwner(((Chest) b.getRelative(bf).getState()).getInventory(),
+                                              event.getPlayer().getName())) {
+                        event.setCancelled(true);
+                        event.getPlayer().sendMessage(ChatColor.YELLOW +
+                                                              "You cannot place hoppers next to chests you do not own.");
+                        return;
+                    }
+                } else if (b.getRelative(bf).getState() instanceof DoubleChest) {
+                    if (!BoltAPI.isChestOwner(((DoubleChest) b.getRelative(bf).getState()).getInventory(),
+                                              event.getPlayer().getName())) {
+                        event.setCancelled(true);
+                        event.getPlayer().sendMessage(ChatColor.YELLOW +
+                                                              "You cannot place hoppers next to chests you do not own.");
+                        return;
+                    }
                 }
             }
         } else if (event.getBlockPlaced().getState() instanceof Chest) {
+            BlockFace[] check =
+                    {BlockFace.UP, BlockFace.DOWN, BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST};
+            for (BlockFace bf : check) {
+                if (b.getRelative(bf).getState() instanceof Chest) {
+                    if (!BoltAPI.isChestOwner(((Chest) b.getRelative(bf).getState()).getInventory(),
+                                              event.getPlayer().getName())) {
+                        event.setCancelled(true);
+                        event.getPlayer().sendMessage(ChatColor.YELLOW +
+                                                              "You cannot place chests next to chests you do not own.");
+                        return;
+                    }
+                } else if (b.getRelative(bf).getState() instanceof DoubleChest) {
+                    if (!BoltAPI.isChestOwner(((DoubleChest) b.getRelative(bf).getState()).getInventory(),
+                                              event.getPlayer().getName())) {
+                        event.setCancelled(true);
+                        event.getPlayer().sendMessage(ChatColor.YELLOW +
+                                                              "You cannot place chests next to chests you do not own.");
+                        return;
+                    }
+                }
+            }
             Chest chest = (Chest) event.getBlockPlaced().getState();
-            ItemStack old = chest.getInventory().getItem(chest.getInventory().getSize() / 2 - 1);
-            if (old != null && old.getType() == Material.PAPER) {
-                HiltItemStack his = new HiltItemStack(old);
-                if (his.getName().equals(ChatColor.GOLD + "Chest Status: " + ChatColor.RED + "Locked")) {
-                    chest.getInventory().setItem(chest.getInventory().getSize() / 2 - 1, null);
-                } else if (his.getName().equals(ChatColor.GOLD + "Chest Status: " + ChatColor.GREEN + "Unlocked")) {
-                    chest.getInventory().setItem(chest.getInventory().getSize() / 2 - 1, null);
-                }
-            }
-            HiltItemStack hiltItemStack = new HiltItemStack(Material.PAPER);
-            hiltItemStack.setName(ChatColor.GOLD + "Chest Status: " + ChatColor.RED + "Locked");
-            List<String> lore = new ArrayList<>();
-            lore.add(ChatColor.WHITE + "<Click to Toggle>");
-            lore.add(ChatColor.GOLD + "Owner: " + ChatColor.WHITE + event.getPlayer().getName());
-            List<String> allowedUsers = BoltAPI.getAllowedUsers(chest.getInventory());
-            if (allowedUsers.size() > 0) {
-                for (String s : allowedUsers) {
-                    lore.add(ChatColor.GRAY + s);
-                }
-            } else {
-                lore.add(ChatColor.GRAY + "Type /add <playername> while looking at");
-                lore.add(ChatColor.GRAY + "this chest to allow people to use it.");
-            }
-            hiltItemStack.setLore(lore);
-            chest.getInventory().setItem(chest.getInventory().getSize() - 1, hiltItemStack);
-        } else if (event.getBlockPlaced().getState() instanceof InventoryHolder &&
-                event.getBlockPlaced().getState() instanceof DoubleChest) {
-            DoubleChest chest = (DoubleChest) event.getBlockPlaced().getState();
             ItemStack old = chest.getInventory().getItem(chest.getInventory().getSize() / 2 - 1);
             if (old != null && old.getType() == Material.PAPER) {
                 HiltItemStack his = new HiltItemStack(old);
