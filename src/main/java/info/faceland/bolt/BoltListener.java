@@ -32,28 +32,55 @@ public class BoltListener implements Listener {
 
     @EventHandler(priority = EventPriority.LOWEST)
     public void onBlockPlace(BlockPlaceEvent event) {
-        if (!(event.getBlockPlaced().getState() instanceof Chest)) {
-            return;
-        }
-        Chest chest = (Chest) event.getBlockPlaced().getState();
-        ItemStack old = chest.getInventory().getItem(chest.getInventory().getSize() / 2 - 1);
-        if (old != null && old.getType() == Material.PAPER) {
-            HiltItemStack his = new HiltItemStack(old);
-            if (his.getName().equals(ChatColor.GOLD + "Chest Status: " + ChatColor.RED + "Locked")) {
-                chest.getInventory().setItem(chest.getInventory().getSize() / 2 - 1, null);
-            } else if (his.getName().equals(ChatColor.GOLD + "Chest Status: " + ChatColor.GREEN + "Unlocked")) {
-                chest.getInventory().setItem(chest.getInventory().getSize() / 2 - 1, null);
+        if (event.getBlockPlaced().getState() instanceof Chest) {
+            Chest chest = (Chest) event.getBlockPlaced().getState();
+            ItemStack old = chest.getInventory().getItem(chest.getInventory().getSize() / 2 - 1);
+            if (old != null && old.getType() == Material.PAPER) {
+                HiltItemStack his = new HiltItemStack(old);
+                if (his.getName().equals(ChatColor.GOLD + "Chest Status: " + ChatColor.RED + "Locked")) {
+                    chest.getInventory().setItem(chest.getInventory().getSize() / 2 - 1, null);
+                } else if (his.getName().equals(ChatColor.GOLD + "Chest Status: " + ChatColor.GREEN + "Unlocked")) {
+                    chest.getInventory().setItem(chest.getInventory().getSize() / 2 - 1, null);
+                }
             }
+            HiltItemStack hiltItemStack = new HiltItemStack(Material.PAPER);
+            hiltItemStack.setName(ChatColor.GOLD + "Chest Status: " + ChatColor.RED + "Locked");
+            List<String> lore = new ArrayList<>();
+            lore.add(ChatColor.WHITE + "< Click to Toggle >");
+            lore.add(ChatColor.GOLD + "Owner: " + ChatColor.WHITE + event.getPlayer().getName());
+            lore.add(ChatColor.GRAY + "Type /add <playername> while looking");
+            lore.add(ChatColor.GRAY + "at this chest to allow people to use it.");
+            hiltItemStack.setLore(lore);
+            chest.getInventory().setItem(chest.getInventory().getSize() - 1, hiltItemStack);
+        } else if (event.getBlockPlaced().getState() instanceof InventoryHolder &&
+                event.getBlockPlaced().getState() instanceof DoubleChest) {
+            DoubleChest chest = (DoubleChest) event.getBlockPlaced().getState();
+            ItemStack old = chest.getInventory().getItem(chest.getInventory().getSize() / 2 - 1);
+            if (old != null && old.getType() == Material.PAPER) {
+                HiltItemStack his = new HiltItemStack(old);
+                if (his.getName().equals(ChatColor.GOLD + "Chest Status: " + ChatColor.RED + "Locked")) {
+                    chest.getInventory().setItem(chest.getInventory().getSize() / 2 - 1, null);
+                } else if (his.getName().equals(ChatColor.GOLD + "Chest Status: " + ChatColor.GREEN + "Unlocked")) {
+                    chest.getInventory().setItem(chest.getInventory().getSize() / 2 - 1, null);
+                }
+            }
+            HiltItemStack hiltItemStack = new HiltItemStack(Material.PAPER);
+            hiltItemStack.setName(ChatColor.GOLD + "Chest Status: " + ChatColor.RED + "Locked");
+            List<String> lore = new ArrayList<>();
+            lore.add(ChatColor.WHITE + "< Click to Toggle >");
+            lore.add(ChatColor.GOLD + "Owner: " + ChatColor.WHITE + event.getPlayer().getName());
+            List<String> allowedUsers = BoltAPI.getAllowedUsers(chest.getInventory());
+            if (allowedUsers.size() > 0) {
+                for (String s : allowedUsers) {
+                    lore.add(ChatColor.WHITE + s);
+                }
+            } else {
+                lore.add(ChatColor.GRAY + "Type /add <playername> while looking");
+                lore.add(ChatColor.GRAY + "at this chest to allow people to use it.");
+            }
+            hiltItemStack.setLore(lore);
+            chest.getInventory().setItem(chest.getInventory().getSize() - 1, hiltItemStack);
         }
-        HiltItemStack hiltItemStack = new HiltItemStack(Material.PAPER);
-        hiltItemStack.setName(ChatColor.GOLD + "Chest Status: " + ChatColor.RED + "Locked");
-        List<String> lore = new ArrayList<>();
-        lore.add(ChatColor.WHITE + "< Click to Toggle >");
-        lore.add(ChatColor.GOLD + "Owner: " + ChatColor.WHITE + event.getPlayer().getName());
-        lore.add(ChatColor.GRAY + "Type /add <playername> while looking");
-        lore.add(ChatColor.GRAY + "at this chest to allow people to use it.");
-        hiltItemStack.setLore(lore);
-        chest.getInventory().setItem(chest.getInventory().getSize() - 1, hiltItemStack);
     }
 
     @EventHandler(priority = EventPriority.LOWEST)
@@ -61,7 +88,8 @@ public class BoltListener implements Listener {
         if (!(event.getBlock().getState() instanceof InventoryHolder)) {
             return;
         }
-        if (!BoltAPI.isChestOwner(((InventoryHolder) event.getBlock().getState()).getInventory(), event.getPlayer().getName())) {
+        if (!BoltAPI.isChestOwner(((InventoryHolder) event.getBlock().getState()).getInventory(),
+                                  event.getPlayer().getName())) {
             event.setCancelled(true);
             event.getPlayer().sendMessage(ChatColor.RED + "You cannot break a locked chest.");
             return;
@@ -78,8 +106,8 @@ public class BoltListener implements Listener {
         if (holder.getInventory() instanceof DoubleChestInventory) {
             if (holder.getInventory().getItem(holder.getInventory().getSize() / 2 - 1) != null) {
                 event.getBlock().getWorld().dropItemNaturally(event.getBlock().getLocation(),
-                                                                    holder.getInventory().getItem(
-                                                                            holder.getInventory().getSize() / 2 - 1));
+                                                              holder.getInventory().getItem(
+                                                                      holder.getInventory().getSize() / 2 - 1));
             }
             HiltItemStack hiltItemStack = new HiltItemStack(Material.PAPER);
             hiltItemStack.setName(ChatColor.GOLD + "Chest Status: " + ChatColor.RED + "Locked");
