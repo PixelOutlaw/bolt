@@ -76,7 +76,9 @@ public class BoltListener implements Listener {
         }
         if (holder.getInventory() instanceof DoubleChestInventory) {
             if (holder.getInventory().getItem(holder.getInventory().getSize() / 2 - 1) != null) {
-                return;
+                ((DoubleChest) holder).getWorld().dropItemNaturally(((DoubleChest) holder).getLocation(),
+                                                                    holder.getInventory().getItem(
+                                                                            holder.getInventory().getSize() / 2 - 1));
             }
             HiltItemStack hiltItemStack = new HiltItemStack(Material.PAPER);
             hiltItemStack.setName(ChatColor.GOLD + "Chest Status: " + ChatColor.RED + "Locked");
@@ -133,8 +135,8 @@ public class BoltListener implements Listener {
                     event.setCurrentItem(his);
                 }
             }
-        }
-        else if (event.getInventory().getHolder() instanceof DoubleChest) {ItemStack itemStack = event.getCurrentItem();
+        } else if (event.getInventory().getHolder() instanceof DoubleChest) {
+            ItemStack itemStack = event.getCurrentItem();
             if (itemStack == null || itemStack.getType() != Material.PAPER) {
                 return;
             }
