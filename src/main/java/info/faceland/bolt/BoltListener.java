@@ -14,6 +14,7 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.ItemSpawnEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
+import org.bukkit.inventory.DoubleChestInventory;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
@@ -60,6 +61,27 @@ public class BoltListener implements Listener {
         }
         if (BoltAPI.isChestLocked((Chest) event.getBlock().getState(), event.getPlayer())) {
             event.setCancelled(true);
+            return;
+        }
+        Chest chest = (Chest) event.getBlock().getState();
+        ItemStack itemStack = chest.getInventory().getItem(chest.getInventory().getSize() - 1);
+        if (itemStack == null) {
+            return;
+        }
+        HiltItemStack his = new HiltItemStack(itemStack);
+        if (!his.getName().startsWith(ChatColor.GOLD + "Chest Status:")) {
+            return;
+        }
+        if (chest.getInventory() instanceof DoubleChestInventory) {
+            HiltItemStack hiltItemStack = new HiltItemStack(Material.PAPER);
+            hiltItemStack.setName(ChatColor.GOLD + "Chest Status: " + ChatColor.RED + "Locked");
+            List<String> lore = new ArrayList<>();
+            lore.add(ChatColor.WHITE + "< Click to Toggle >");
+            lore.add(ChatColor.GOLD + "Owner: " + ChatColor.WHITE + event.getPlayer().getName());
+            lore.add(ChatColor.GRAY + "Type /add <playername> while looking");
+            lore.add(ChatColor.GRAY + "at this chest to allow people to use it.");
+            hiltItemStack.setLore(lore);
+            chest.getInventory().setItem(chest.getInventory().getSize() / 2 - 1, hiltItemStack);
         }
     }
 
