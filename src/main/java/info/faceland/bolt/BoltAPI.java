@@ -33,7 +33,10 @@ public class BoltAPI {
             return false;
         }
         for (String s : hiltItemStack.getLore()) {
-            if (ChatColor.stripColor(s).equals(opener.getName())) {
+            String strip = ChatColor.stripColor(s);
+            if (strip.equalsIgnoreCase(opener.getName()) || strip.equalsIgnoreCase("Everybody") ||
+                    strip.equalsIgnoreCase("Anybody") || strip.equalsIgnoreCase("Everyone") ||
+                    strip.equalsIgnoreCase("Anyone")) {
                 return false;
             }
         }
