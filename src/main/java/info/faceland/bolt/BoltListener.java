@@ -63,6 +63,7 @@ public class BoltListener implements Listener {
         }
         if (BoltAPI.isChestLocked(((InventoryHolder) event.getBlock().getState()).getInventory(), event.getPlayer())) {
             event.setCancelled(true);
+            event.getPlayer().sendMessage(ChatColor.RED + "You cannot break a locked chest.");
             return;
         }
         InventoryHolder holder = (InventoryHolder) event.getBlock().getState();
@@ -100,10 +101,12 @@ public class BoltListener implements Listener {
         if (event.getInventory().getHolder() instanceof Chest) {
             if (BoltAPI.isChestLocked(event.getInventory(), (Player) event.getPlayer())) {
                 event.setCancelled(true);
+                ((Player) event.getPlayer()).sendMessage(ChatColor.RED + "You cannot open a locked chest.");
             }
         } else if (event.getInventory().getHolder() instanceof DoubleChest) {
             if (BoltAPI.isChestLocked(event.getInventory(), (Player) event.getPlayer())) {
                 event.setCancelled(true);
+                ((Player) event.getPlayer()).sendMessage(ChatColor.RED + "You cannot open a locked chest.");
             }
         }
     }
