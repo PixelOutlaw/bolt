@@ -16,6 +16,7 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.ItemSpawnEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryMoveItemEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.inventory.DoubleChestInventory;
 import org.bukkit.inventory.InventoryHolder;
@@ -30,6 +31,19 @@ public class BoltListener implements Listener {
 
     public BoltListener(BoltPlugin plugin) {
         this.plugin = plugin;
+    }
+
+    @EventHandler(priority = EventPriority.LOWEST)
+    public void onInventoryMoveItem(InventoryMoveItemEvent event) {
+        ItemStack is = event.getItem();
+        if (is == null || is.getType() != Material.PAPER) {
+            return;
+        }
+        HiltItemStack his = new HiltItemStack(event.getItem());
+        if (his.getName().startsWith(ChatColor.GOLD + "Chest Status:")) {
+            event.setCancelled(true);
+            return;
+        }
     }
 
     @EventHandler(priority = EventPriority.LOWEST)
