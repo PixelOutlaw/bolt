@@ -3,7 +3,6 @@ package info.faceland.bolt;
 import info.faceland.hilt.HiltItemStack;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.block.Chest;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -17,11 +16,10 @@ public class BoltAPI {
         // do nothing
     }
 
-    public static boolean isChestLocked(Chest chest, Player opener) {
-        if (chest == null || opener.hasPermission("bolt.anylock")) {
+    public static boolean isChestLocked(Inventory inventory, Player opener) {
+        if (opener.hasPermission("bolt.anylock")) {
             return false;
         }
-        Inventory inventory = chest.getBlockInventory();
         ItemStack itemStack = inventory.getItem(inventory.getSize() - 1);
         if (itemStack == null || itemStack.getType() != Material.PAPER) {
             return false;
@@ -42,16 +40,12 @@ public class BoltAPI {
         return true;
     }
 
-    public static boolean isChestOwner(Chest chest, String opener) {
-        String owner = getChestOwnerName(chest);
+    public static boolean isChestOwner(Inventory inventory, String opener) {
+        String owner = getChestOwnerName(inventory);
         return !(owner == null || opener == null) && owner.equals(opener);
     }
 
-    public static String getChestOwnerName(Chest chest) {
-        if (chest == null) {
-            return null;
-        }
-        Inventory inventory = chest.getBlockInventory();
+    public static String getChestOwnerName(Inventory inventory) {
         ItemStack itemStack = inventory.getItem(inventory.getSize() - 1);
         if (itemStack == null || itemStack.getType() != Material.PAPER) {
             return null;
@@ -60,11 +54,10 @@ public class BoltAPI {
         return ChatColor.stripColor(hiltItemStack.getLore().get(1)).replace("Owner: ", "").trim();
     }
 
-    public static void setChestOwner(Chest chest, String owner) {
-        if (chest == null || owner == null) {
+    public static void setChestOwner(Inventory inventory, String owner) {
+        if (owner == null) {
             return;
         }
-        Inventory inventory = chest.getBlockInventory();
         ItemStack itemStack = inventory.getItem(inventory.getSize() - 1);
         if (itemStack == null || itemStack.getType() != Material.PAPER) {
             return;
@@ -79,11 +72,7 @@ public class BoltAPI {
         inventory.setItem(inventory.getSize() - 1, hiltItemStack);
     }
 
-    public static List<String> getAllowedUsers(Chest chest) {
-        if (chest == null) {
-            return new ArrayList<>();
-        }
-        Inventory inventory = chest.getBlockInventory();
+    public static List<String> getAllowedUsers(Inventory inventory) {
         ItemStack itemStack = inventory.getItem(inventory.getSize() - 1);
         if (itemStack == null || itemStack.getType() != Material.PAPER) {
             return new ArrayList<>();
@@ -107,11 +96,7 @@ public class BoltAPI {
         return allowed;
     }
 
-    public static void setAllowedUsers(Chest chest, List<String> users) {
-        if (chest == null) {
-            return;
-        }
-        Inventory inventory = chest.getBlockInventory();
+    public static void setAllowedUsers(Inventory inventory, List<String> users) {
         ItemStack itemStack = inventory.getItem(inventory.getSize() - 1);
         if (itemStack == null || itemStack.getType() != Material.PAPER) {
             return;

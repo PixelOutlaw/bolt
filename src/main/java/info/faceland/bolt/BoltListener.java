@@ -4,6 +4,7 @@ import info.faceland.hilt.HiltItemStack;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Chest;
+import org.bukkit.block.DoubleChest;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
@@ -15,6 +16,7 @@ import org.bukkit.event.entity.ItemSpawnEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.inventory.DoubleChestInventory;
+import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
@@ -56,15 +58,15 @@ public class BoltListener implements Listener {
 
     @EventHandler(priority = EventPriority.LOWEST)
     public void onBlockBreakEvent(BlockBreakEvent event) {
-        if (!(event.getBlock().getState() instanceof Chest)) {
+        if (!(event.getBlock().getState() instanceof InventoryHolder)) {
             return;
         }
-        if (BoltAPI.isChestLocked((Chest) event.getBlock().getState(), event.getPlayer())) {
+        if (BoltAPI.isChestLocked(((InventoryHolder) event.getBlock().getState()).getInventory(), event.getPlayer())) {
             event.setCancelled(true);
             return;
         }
-        Chest chest = (Chest) event.getBlock().getState();
-        ItemStack itemStack = chest.getInventory().getItem(chest.getInventory().getSize() - 1);
+        InventoryHolder holder = (InventoryHolder) event.getBlock().getState();
+        ItemStack itemStack = holder.getInventory().getItem(holder.getInventory().getSize() - 1);
         if (itemStack == null) {
             return;
         }
@@ -72,7 +74,7 @@ public class BoltListener implements Listener {
         if (!his.getName().startsWith(ChatColor.GOLD + "Chest Status:")) {
             return;
         }
-        if (chest.getInventory() instanceof DoubleChestInventory) {
+        if (holder.getInventory() instanceof DoubleChestInventory) {
             HiltItemStack hiltItemStack = new HiltItemStack(Material.PAPER);
             hiltItemStack.setName(ChatColor.GOLD + "Chest Status: " + ChatColor.RED + "Locked");
             List<String> lore = new ArrayList<>();
@@ -81,44 +83,74 @@ public class BoltListener implements Listener {
             lore.add(ChatColor.GRAY + "Type /add <playername> while looking");
             lore.add(ChatColor.GRAY + "at this chest to allow people to use it.");
             hiltItemStack.setLore(lore);
-            chest.getInventory().setItem(chest.getInventory().getSize() / 2 - 1, hiltItemStack);
+            holder.getInventory().setItem(holder.getInventory().getSize() / 2 - 1, hiltItemStack);
         }
     }
 
     @EventHandler(priority = EventPriority.LOWEST)
     public void onInventoryOpen(InventoryOpenEvent event) {
-        if (!(event.getInventory().getHolder() instanceof Chest) || !(event.getPlayer() instanceof Player)) {
+        if (!(event.getPlayer() instanceof Player)) {
             return;
         }
-        if (BoltAPI.isChestLocked((Chest) event.getInventory().getHolder(), (Player) event.getPlayer())) {
-            event.setCancelled(true);
+        if (event.getInventory().getHolder() instanceof Chest) {
+            if (BoltAPI.isChestLocked(event.getInventory(), (Player) event.getPlayer())) {
+                event.setCancelled(true);
+            }
+        } else if (event.getInventory().getHolder() instanceof DoubleChest) {
+            if (BoltAPI.isChestLocked(event.getInventory(), (Player) event.getPlayer())) {
+                event.setCancelled(true);
+            }
         }
     }
 
     @EventHandler(priority = EventPriority.LOWEST)
     public void onInventoryClick(InventoryClickEvent event) {
-        if (!(event.getInventory().getHolder() instanceof Chest) || !(event.getWhoClicked() instanceof Player)) {
+        if (!(event.getWhoClicked() instanceof Player)) {
             return;
         }
-        ItemStack itemStack = event.getCurrentItem();
-        if (itemStack == null || itemStack.getType() != Material.PAPER) {
-            return;
-        }
-        HiltItemStack his = new HiltItemStack(itemStack);
-        if (his.getName().equals(ChatColor.GOLD + "Chest Status: " + ChatColor.RED + "Locked")) {
-            event.setCancelled(true);
-            event.setResult(Event.Result.DENY);
-        } else if (his.getName().equals(ChatColor.GOLD + "Chest Status: " + ChatColor.GREEN + "Unlocked")) {
-            event.setCancelled(true);
-            event.setResult(Event.Result.DENY);
-        }
-        if (BoltAPI.isChestOwner((Chest) event.getInventory().getHolder(), event.getWhoClicked().getName())) {
+        if (event.getInventory().getHolder() instanceof Chest) {
+            ItemStack itemStack = event.getCurrentItem();
+            if (itemStack == null || itemStack.getType() != Material.PAPER) {
+                return;
+            }
+            HiltItemStack his = new HiltItemStack(itemStack);
             if (his.getName().equals(ChatColor.GOLD + "Chest Status: " + ChatColor.RED + "Locked")) {
-                his.setName(ChatColor.GOLD + "Chest Status: " + ChatColor.GREEN + "Unlocked");
-                event.setCurrentItem(his);
+                event.setCancelled(true);
+                event.setResult(Event.Result.DENY);
             } else if (his.getName().equals(ChatColor.GOLD + "Chest Status: " + ChatColor.GREEN + "Unlocked")) {
-                his.setName(ChatColor.GOLD + "Chest Status: " + ChatColor.RED + "Locked");
-                event.setCurrentItem(his);
+                event.setCancelled(true);
+                event.setResult(Event.Result.DENY);
+            }
+            if (BoltAPI.isChestOwner(event.getInventory(), event.getWhoClicked().getName())) {
+                if (his.getName().equals(ChatColor.GOLD + "Chest Status: " + ChatColor.RED + "Locked")) {
+                    his.setName(ChatColor.GOLD + "Chest Status: " + ChatColor.GREEN + "Unlocked");
+                    event.setCurrentItem(his);
+                } else if (his.getName().equals(ChatColor.GOLD + "Chest Status: " + ChatColor.GREEN + "Unlocked")) {
+                    his.setName(ChatColor.GOLD + "Chest Status: " + ChatColor.RED + "Locked");
+                    event.setCurrentItem(his);
+                }
+            }
+        }
+        else if (event.getInventory().getHolder() instanceof DoubleChest) {ItemStack itemStack = event.getCurrentItem();
+            if (itemStack == null || itemStack.getType() != Material.PAPER) {
+                return;
+            }
+            HiltItemStack his = new HiltItemStack(itemStack);
+            if (his.getName().equals(ChatColor.GOLD + "Chest Status: " + ChatColor.RED + "Locked")) {
+                event.setCancelled(true);
+                event.setResult(Event.Result.DENY);
+            } else if (his.getName().equals(ChatColor.GOLD + "Chest Status: " + ChatColor.GREEN + "Unlocked")) {
+                event.setCancelled(true);
+                event.setResult(Event.Result.DENY);
+            }
+            if (BoltAPI.isChestOwner(event.getInventory(), event.getWhoClicked().getName())) {
+                if (his.getName().equals(ChatColor.GOLD + "Chest Status: " + ChatColor.RED + "Locked")) {
+                    his.setName(ChatColor.GOLD + "Chest Status: " + ChatColor.GREEN + "Unlocked");
+                    event.setCurrentItem(his);
+                } else if (his.getName().equals(ChatColor.GOLD + "Chest Status: " + ChatColor.GREEN + "Unlocked")) {
+                    his.setName(ChatColor.GOLD + "Chest Status: " + ChatColor.RED + "Locked");
+                    event.setCurrentItem(his);
+                }
             }
         }
     }

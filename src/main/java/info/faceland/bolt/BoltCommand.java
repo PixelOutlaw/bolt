@@ -19,17 +19,17 @@ public class BoltCommand {
             return;
         }
         Chest chest = (Chest) b.getState();
-        if (!BoltAPI.isChestOwner(chest, sender.getName())) {
+        if (!BoltAPI.isChestOwner(chest.getInventory(), sender.getName())) {
             sender.sendMessage(ChatColor.RED + "You cannot add to that.");
             return;
         }
-        List<String> allowed = BoltAPI.getAllowedUsers(chest);
+        List<String> allowed = BoltAPI.getAllowedUsers(chest.getInventory());
         if (allowed.size() >= 4) {
             sender.sendMessage(ChatColor.RED + "You already have four people added to that chest.");
             return;
         }
         allowed.add(target.length() > 16 ? target.substring(0, 15) : target);
-        BoltAPI.setAllowedUsers(chest, allowed);
+        BoltAPI.setAllowedUsers(chest.getInventory(), allowed);
         sender.sendMessage(
                 ChatColor.GREEN + "You added " + ChatColor.WHITE + target + ChatColor.GREEN +
                         " to your chest.");
@@ -43,13 +43,13 @@ public class BoltCommand {
             return;
         }
         Chest chest = (Chest) b.getState();
-        if (!BoltAPI.isChestOwner(chest, sender.getName())) {
+        if (!BoltAPI.isChestOwner(chest.getInventory(), sender.getName())) {
             sender.sendMessage(ChatColor.RED + "You cannot remove from that.");
             return;
         }
-        List<String> allowed = BoltAPI.getAllowedUsers(chest);
+        List<String> allowed = BoltAPI.getAllowedUsers(chest.getInventory());
         allowed.remove(target.length() > 16 ? target.substring(0, 15) : target);
-        BoltAPI.setAllowedUsers(chest, allowed);
+        BoltAPI.setAllowedUsers(chest.getInventory(), allowed);
         sender.sendMessage(
                 ChatColor.GREEN + "You removed " + ChatColor.WHITE + target + ChatColor.GREEN +
                         " from your chest.");
@@ -63,7 +63,7 @@ public class BoltCommand {
             return;
         }
         Chest chest = (Chest) b.getState();
-        if (!BoltAPI.isChestOwner(chest, sender.getName())) {
+        if (!BoltAPI.isChestOwner(chest.getInventory(), sender.getName())) {
             sender.sendMessage(ChatColor.RED + "You cannot make that normal.");
             return;
         }
@@ -79,7 +79,7 @@ public class BoltCommand {
             return;
         }
         Chest chest = (Chest) b.getState();
-        BoltAPI.setChestOwner(chest, target.length() > 16 ? target.substring(0, 15) : target);
+        BoltAPI.setChestOwner(chest.getInventory(), target.length() > 16 ? target.substring(0, 15) : target);
         sender.sendMessage(ChatColor.GREEN + "You made " + ChatColor.WHITE + target + ChatColor.GREEN +
                                    " the owner of that chest.");
     }
