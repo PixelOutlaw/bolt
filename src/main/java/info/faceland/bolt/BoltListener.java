@@ -3,8 +3,10 @@ package info.faceland.bolt;
 import info.faceland.hilt.HiltItemStack;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.block.BlockFace;
 import org.bukkit.block.Chest;
 import org.bukkit.block.DoubleChest;
+import org.bukkit.block.Hopper;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
@@ -32,7 +34,23 @@ public class BoltListener implements Listener {
 
     @EventHandler(priority = EventPriority.LOWEST)
     public void onBlockPlace(BlockPlaceEvent event) {
-        if (event.getBlockPlaced().getState() instanceof Chest) {
+        if (event.getBlockPlaced().getState() instanceof Hopper) {
+            if (event.getBlockPlaced().getRelative(BlockFace.UP).getState() instanceof Chest) {
+                if (!BoltAPI.isChestOwner(
+                        ((Chest) event.getBlockPlaced().getRelative(BlockFace.UP).getState()).getInventory(),
+                        event.getPlayer().getName())) {
+                    event.setCancelled(true);
+                    event.getPlayer().sendMessage(ChatColor.YELLOW + "You cannot place hoppers under chests you do not own.");
+                }
+            } else if (event.getBlockPlaced().getRelative(BlockFace.UP).getState() instanceof DoubleChest) {
+                if (!BoltAPI.isChestOwner(
+                        ((DoubleChest) event.getBlockPlaced().getRelative(BlockFace.UP).getState()).getInventory(),
+                        event.getPlayer().getName())) {
+                    event.setCancelled(true);
+                    event.getPlayer().sendMessage(ChatColor.YELLOW + "You cannot place hoppers under chests you do not own.");
+                }
+            }
+        } else if (event.getBlockPlaced().getState() instanceof Chest) {
             Chest chest = (Chest) event.getBlockPlaced().getState();
             ItemStack old = chest.getInventory().getItem(chest.getInventory().getSize() / 2 - 1);
             if (old != null && old.getType() == Material.PAPER) {
