@@ -33,6 +33,15 @@ public class BoltListener implements Listener {
             return;
         }
         Chest chest = (Chest) event.getBlockPlaced().getState();
+        ItemStack old = chest.getInventory().getItem(chest.getInventory().getSize() / 2 - 1);
+        if (old != null && old.getType() == Material.PAPER) {
+            HiltItemStack his = new HiltItemStack(old);
+            if (his.getName().equals(ChatColor.GOLD + "Chest Status: " + ChatColor.RED + "Locked")) {
+                chest.getInventory().setItem(chest.getInventory().getSize() / 2 - 1, null);
+            } else if (his.getName().equals(ChatColor.GOLD + "Chest Status: " + ChatColor.GREEN + "Unlocked")) {
+                chest.getInventory().setItem(chest.getInventory().getSize() / 2 - 1, null);
+            }
+        }
         HiltItemStack hiltItemStack = new HiltItemStack(Material.PAPER);
         hiltItemStack.setName(ChatColor.GOLD + "Chest Status: " + ChatColor.RED + "Locked");
         List<String> lore = new ArrayList<>();
