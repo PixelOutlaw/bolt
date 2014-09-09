@@ -89,7 +89,7 @@ public class BoltAPI {
             allowed.add(hiltItemStack.getLore().get(2));
             return allowed;
         }
-        if (hiltItemStack.getLore().get(2).equals(ChatColor.GRAY + "Type /add <playername> while looking")) {
+        if (hiltItemStack.getLore().get(2).equals(ChatColor.GRAY + "Type /add <playername> while looking at")) {
             return allowed;
         }
         List<String> subList = hiltItemStack.getLore().subList(2, hiltItemStack.getLore().size());
@@ -111,15 +111,15 @@ public class BoltAPI {
         String owner = ChatColor.stripColor(hiltItemStack.getLore().get(1)).replace("Owner: ", "").trim();
         List<String> lore = hiltItemStack.getLore();
         lore.clear();
-        lore.add(ChatColor.WHITE + "< Click to Toggle >");
+        lore.add(ChatColor.WHITE + "<Click to Toggle>");
         lore.add(ChatColor.GOLD + "Owner: " + ChatColor.WHITE + owner);
         if (users.size() > 0) {
             for (String s : users) {
-                lore.add(ChatColor.WHITE + s);
+                lore.add(ChatColor.GRAY + s);
             }
         } else {
-            lore.add(ChatColor.GRAY + "Type /add <playername> while looking");
-            lore.add(ChatColor.GRAY + "at this chest to allow people to use it.");
+            lore.add(ChatColor.GRAY + "Type /add <playername> while looking at");
+            lore.add(ChatColor.GRAY + "this chest to allow people to use it.");
         }
         hiltItemStack.setLore(lore);
         inventory.setItem(inventory.getSize() - 1, hiltItemStack);
