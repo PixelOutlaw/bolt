@@ -124,7 +124,7 @@ public class BoltListener implements Listener {
 
     @EventHandler(priority = EventPriority.LOWEST)
     public void onBlockBreakEvent(BlockBreakEvent event) {
-        if (!(event.getBlock().getState() instanceof InventoryHolder)) {
+        if (!(event.getBlock().getState() instanceof Chest) && !(event.getBlock().getState() instanceof DoubleChest)) {
             return;
         }
         if (!BoltAPI.isChestOwner(((InventoryHolder) event.getBlock().getState()).getInventory(),
