@@ -61,7 +61,7 @@ public class BoltListener implements Listener {
         if (!(event.getBlock().getState() instanceof InventoryHolder)) {
             return;
         }
-        if (BoltAPI.isChestLocked(((InventoryHolder) event.getBlock().getState()).getInventory(), event.getPlayer())) {
+        if (!BoltAPI.isChestOwner(((InventoryHolder) event.getBlock().getState()).getInventory(), event.getPlayer().getName())) {
             event.setCancelled(true);
             event.getPlayer().sendMessage(ChatColor.RED + "You cannot break a locked chest.");
             return;
