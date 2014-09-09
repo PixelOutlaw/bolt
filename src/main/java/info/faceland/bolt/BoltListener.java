@@ -76,7 +76,7 @@ public class BoltListener implements Listener {
         }
         if (holder.getInventory() instanceof DoubleChestInventory) {
             if (holder.getInventory().getItem(holder.getInventory().getSize() / 2 - 1) != null) {
-                ((DoubleChest) holder).getWorld().dropItemNaturally(((DoubleChest) holder).getLocation(),
+                event.getBlock().getWorld().dropItemNaturally(event.getBlock().getLocation(),
                                                                     holder.getInventory().getItem(
                                                                             holder.getInventory().getSize() / 2 - 1));
             }
