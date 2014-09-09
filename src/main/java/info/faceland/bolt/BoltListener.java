@@ -75,6 +75,9 @@ public class BoltListener implements Listener {
             return;
         }
         if (holder.getInventory() instanceof DoubleChestInventory) {
+            if (holder.getInventory().getItem(holder.getInventory().getSize() / 2 - 1) != null) {
+                return;
+            }
             HiltItemStack hiltItemStack = new HiltItemStack(Material.PAPER);
             hiltItemStack.setName(ChatColor.GOLD + "Chest Status: " + ChatColor.RED + "Locked");
             List<String> lore = new ArrayList<>();
