@@ -6,7 +6,7 @@
 
     <groupId>info.faceland</groupId>
     <artifactId>bolt</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.0.0</version>
 
     <name>Bolt</name>
     <description>Chest locking plugin for Faceland.</description>
