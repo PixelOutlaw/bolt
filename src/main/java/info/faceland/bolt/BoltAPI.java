@@ -4,6 +4,7 @@ import info.faceland.hilt.HiltItemStack;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.DoubleChestInventory;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
@@ -45,16 +46,28 @@ public class BoltAPI {
 
     public static boolean isChestOwner(Inventory inventory, String opener) {
         String owner = getChestOwnerName(inventory);
-        return !(owner == null || opener == null) && owner.equalsIgnoreCase(opener);
+        return owner == null || opener != null && opener.equals(owner);
     }
 
     public static String getChestOwnerName(Inventory inventory) {
-        ItemStack itemStack = inventory.getItem(inventory.getSize() - 1);
-        if (itemStack == null || itemStack.getType() != Material.PAPER) {
-            return null;
+        if (inventory instanceof DoubleChestInventory) {
+            ItemStack itemStack = inventory.getItem(inventory.getSize() - 1);
+            if (itemStack == null || itemStack.getType() != Material.PAPER) {
+                itemStack = inventory.getItem(inventory.getSize() / 2 - 1);
+                if (itemStack == null || itemStack.getType() != Material.PAPER) {
+                    return null;
+                }
+            }
+            HiltItemStack hiltItemStack = new HiltItemStack(itemStack);
+            return ChatColor.stripColor(hiltItemStack.getLore().get(1)).replace("Owner: ", "").trim();
+        } else {
+            ItemStack itemStack = inventory.getItem(inventory.getSize() - 1);
+            if (itemStack == null || itemStack.getType() != Material.PAPER) {
+                return null;
+            }
+            HiltItemStack hiltItemStack = new HiltItemStack(itemStack);
+            return ChatColor.stripColor(hiltItemStack.getLore().get(1)).replace("Owner: ", "").trim();
         }
-        HiltItemStack hiltItemStack = new HiltItemStack(itemStack);
-        return ChatColor.stripColor(hiltItemStack.getLore().get(1)).replace("Owner: ", "").trim();
     }
 
     public static void setChestOwner(Inventory inventory, String owner) {
@@ -76,27 +89,54 @@ public class BoltAPI {
     }
 
     public static List<String> getAllowedUsers(Inventory inventory) {
-        ItemStack itemStack = inventory.getItem(inventory.getSize() - 1);
-        if (itemStack == null || itemStack.getType() != Material.PAPER) {
-            return new ArrayList<>();
-        }
-        HiltItemStack hiltItemStack = new HiltItemStack(itemStack);
-        if (!hiltItemStack.getName().startsWith(ChatColor.GOLD + "Chest Status:")) {
-            return new ArrayList<>();
-        }
-        List<String> allowed = new ArrayList<>();
-        if (hiltItemStack.getLore().size() == 3) {
-            allowed.add(hiltItemStack.getLore().get(2));
+        if (inventory instanceof DoubleChestInventory) {
+            ItemStack itemStack = inventory.getItem(inventory.getSize() - 1);
+            if (itemStack == null || itemStack.getType() != Material.PAPER) {
+                itemStack = inventory.getItem(inventory.getSize() / 2 - 1);
+                if (itemStack == null || itemStack.getType() != Material.PAPER) {
+                    return new ArrayList<>();
+                }
+            }
+            HiltItemStack hiltItemStack = new HiltItemStack(itemStack);
+            if (!hiltItemStack.getName().startsWith(ChatColor.GOLD + "Chest Status:")) {
+                return new ArrayList<>();
+            }
+            List<String> allowed = new ArrayList<>();
+            if (hiltItemStack.getLore().size() == 3) {
+                allowed.add(hiltItemStack.getLore().get(2));
+                return allowed;
+            }
+            if (hiltItemStack.getLore().get(2).equals(ChatColor.GRAY + "Type /add <playername> while looking at")) {
+                return allowed;
+            }
+            List<String> subList = hiltItemStack.getLore().subList(2, hiltItemStack.getLore().size());
+            for (String s : subList) {
+                allowed.add(ChatColor.stripColor(s));
+            }
+            return allowed;
+        } else {
+            ItemStack itemStack = inventory.getItem(inventory.getSize() - 1);
+            if (itemStack == null || itemStack.getType() != Material.PAPER) {
+                return new ArrayList<>();
+            }
+            HiltItemStack hiltItemStack = new HiltItemStack(itemStack);
+            if (!hiltItemStack.getName().startsWith(ChatColor.GOLD + "Chest Status:")) {
+                return new ArrayList<>();
+            }
+            List<String> allowed = new ArrayList<>();
+            if (hiltItemStack.getLore().size() == 3) {
+                allowed.add(hiltItemStack.getLore().get(2));
+                return allowed;
+            }
+            if (hiltItemStack.getLore().get(2).equals(ChatColor.GRAY + "Type /add <playername> while looking at")) {
+                return allowed;
+            }
+            List<String> subList = hiltItemStack.getLore().subList(2, hiltItemStack.getLore().size());
+            for (String s : subList) {
+                allowed.add(ChatColor.stripColor(s));
+            }
             return allowed;
         }
-        if (hiltItemStack.getLore().get(2).equals(ChatColor.GRAY + "Type /add <playername> while looking at")) {
-            return allowed;
-        }
-        List<String> subList = hiltItemStack.getLore().subList(2, hiltItemStack.getLore().size());
-        for (String s : subList) {
-            allowed.add(ChatColor.stripColor(s));
-        }
-        return allowed;
     }
 
     public static void setAllowedUsers(Inventory inventory, List<String> users) {

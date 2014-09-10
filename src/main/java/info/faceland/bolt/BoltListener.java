@@ -71,10 +71,7 @@ public class BoltListener implements Listener {
             BlockFace[] check =
                     {BlockFace.UP, BlockFace.DOWN, BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST};
             for (BlockFace bf : check) {
-                plugin.getLogger().info(bf.name());
                 if (b.getRelative(bf).getState() instanceof Chest) {
-                    plugin.getLogger()
-                          .info(BoltAPI.getChestOwnerName(((Chest) b.getRelative(bf).getState()).getInventory()));
                     if (!BoltAPI.isChestOwner(((Chest) b.getRelative(bf).getState()).getInventory(),
                                               event.getPlayer().getName())) {
                         event.setCancelled(true);
