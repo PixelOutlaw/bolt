@@ -102,10 +102,6 @@ public class BoltAPI {
                 return new ArrayList<>();
             }
             List<String> allowed = new ArrayList<>();
-            if (hiltItemStack.getLore().size() == 3) {
-                allowed.add(hiltItemStack.getLore().get(2));
-                return allowed;
-            }
             if (hiltItemStack.getLore().get(2).equals(ChatColor.GRAY + "Type /add <playername> while looking at")) {
                 return allowed;
             }
@@ -124,10 +120,6 @@ public class BoltAPI {
                 return new ArrayList<>();
             }
             List<String> allowed = new ArrayList<>();
-            if (hiltItemStack.getLore().size() == 3) {
-                allowed.add(hiltItemStack.getLore().get(2));
-                return allowed;
-            }
             if (hiltItemStack.getLore().get(2).equals(ChatColor.GRAY + "Type /add <playername> while looking at")) {
                 return allowed;
             }
