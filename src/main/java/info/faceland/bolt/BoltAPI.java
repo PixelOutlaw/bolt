@@ -28,6 +28,31 @@ public class BoltAPI {
             this.display = display;
         }
 
+        public String getDisplay() {
+            return display;
+        }
+
+        public static LockState fromString(String s) {
+            for (LockState ls : values()) {
+                if (ls.display.equals(s)) {
+                    return ls;
+                }
+            }
+            return UNLOCKED;
+        }
+
+    }
+
+    public static LockState getLockState(Inventory inventory) {
+        ItemStack itemStack = inventory.getItem(inventory.getSize() - 1);
+        if (itemStack == null || itemStack.getType() != Material.PAPER) {
+            return LockState.UNLOCKED;
+        }
+        HiltItemStack hiltItemStack = new HiltItemStack(itemStack);
+        if (hiltItemStack.getName().equals("")) {
+            return LockState.UNLOCKED;
+        }
+        return LockState.fromString(hiltItemStack.getName().replace(ChatColor.GOLD + "Chest Status: ", ""));
     }
 
     public static boolean isChestLocked(Inventory inventory, Player opener) {
