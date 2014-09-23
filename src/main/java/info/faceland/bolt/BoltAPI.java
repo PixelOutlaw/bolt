@@ -17,6 +17,19 @@ public class BoltAPI {
         // do nothing
     }
 
+    public enum LockState {
+        UNLOCKED(ChatColor.GREEN + "Unlocked"),
+        LOCKED(ChatColor.RED + "Locked"),
+        ALLOW_VIEW(ChatColor.YELLOW + "Allow View");
+
+        private final String display;
+
+        LockState(String display) {
+            this.display = display;
+        }
+
+    }
+
     public static boolean isChestLocked(Inventory inventory, Player opener) {
         if (opener.hasPermission("bolt.anylock")) {
             return false;
