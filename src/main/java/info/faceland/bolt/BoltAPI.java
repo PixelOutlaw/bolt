@@ -55,6 +55,24 @@ public class BoltAPI {
         return LockState.fromString(hiltItemStack.getName().replace(ChatColor.GOLD + "Chest Status: ", ""));
     }
 
+    public static boolean canOpen(Inventory inventory, Player opener) {
+        if (opener.hasPermission("bolt.anylock")) {
+            return true;
+        }
+        LockState lockState = getLockState(inventory);
+        return lockState == LockState.UNLOCKED || lockState == LockState.ALLOW_VIEW ||
+               isChestOwner(inventory, opener.getName()) || getAllowedUsers(inventory).contains(opener.getName());
+    }
+
+    public static boolean canUse(Inventory inventory, Player opener) {
+        if (opener.hasPermission("bolt.anylock")) {
+            return true;
+        }
+        LockState lockState = getLockState(inventory);
+        return lockState == LockState.UNLOCKED || isChestOwner(inventory, opener.getName()) ||
+               getAllowedUsers(inventory).contains(opener.getName());
+    }
+
     public static boolean isChestLocked(Inventory inventory, Player opener) {
         if (opener.hasPermission("bolt.anylock")) {
             return false;
