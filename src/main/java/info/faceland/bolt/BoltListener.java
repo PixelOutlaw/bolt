@@ -54,7 +54,7 @@ public class BoltListener implements Listener {
                                               event.getPlayer().getName())) {
                         event.setCancelled(true);
                         event.getPlayer().sendMessage(ChatColor.YELLOW +
-                                                              "You cannot place hoppers next to chests you do not own.");
+                                                      "You cannot place hoppers next to chests you do not own.");
                         return;
                     }
                 } else if (b.getRelative(bf).getState() instanceof DoubleChest) {
@@ -62,7 +62,7 @@ public class BoltListener implements Listener {
                                               event.getPlayer().getName())) {
                         event.setCancelled(true);
                         event.getPlayer().sendMessage(ChatColor.YELLOW +
-                                                              "You cannot place hoppers next to chests you do not own.");
+                                                      "You cannot place hoppers next to chests you do not own.");
                         return;
                     }
                 }
@@ -76,7 +76,7 @@ public class BoltListener implements Listener {
                                               event.getPlayer().getName())) {
                         event.setCancelled(true);
                         event.getPlayer().sendMessage(ChatColor.YELLOW +
-                                                              "You cannot place chests next to chests you do not own.");
+                                                      "You cannot place chests next to chests you do not own.");
                         return;
                     }
                 } else if (b.getRelative(bf).getState() instanceof DoubleChest) {
@@ -84,7 +84,7 @@ public class BoltListener implements Listener {
                                               event.getPlayer().getName())) {
                         event.setCancelled(true);
                         event.getPlayer().sendMessage(ChatColor.YELLOW +
-                                                              "You cannot place chests next to chests you do not own.");
+                                                      "You cannot place chests next to chests you do not own.");
                         return;
                     }
                 }
@@ -124,7 +124,7 @@ public class BoltListener implements Listener {
                                               event.getPlayer().getName())) {
                         event.setCancelled(true);
                         event.getPlayer().sendMessage(ChatColor.YELLOW +
-                                                              "You cannot place chests next to chests you do not own.");
+                                                      "You cannot place chests next to chests you do not own.");
                         return;
                     }
                 } else if (b.getRelative(bf).getState() instanceof DoubleChest) {
@@ -132,7 +132,7 @@ public class BoltListener implements Listener {
                                               event.getPlayer().getName())) {
                         event.setCancelled(true);
                         event.getPlayer().sendMessage(ChatColor.YELLOW +
-                                                              "You cannot place chests next to chests you do not own.");
+                                                      "You cannot place chests next to chests you do not own.");
                         return;
                     }
                 }
@@ -217,12 +217,12 @@ public class BoltListener implements Listener {
             return;
         }
         if (event.getInventory().getHolder() instanceof Chest) {
-            if (BoltAPI.isChestLocked(event.getInventory(), (Player) event.getPlayer())) {
+            if (!BoltAPI.canOpen(event.getInventory(), (Player) event.getPlayer())) {
                 event.setCancelled(true);
                 ((Player) event.getPlayer()).sendMessage(ChatColor.YELLOW + "This chest is locked.");
             }
         } else if (event.getInventory().getHolder() instanceof DoubleChest) {
-            if (BoltAPI.isChestLocked(event.getInventory(), (Player) event.getPlayer())) {
+            if (!BoltAPI.canOpen(event.getInventory(), (Player) event.getPlayer())) {
                 event.setCancelled(true);
                 ((Player) event.getPlayer()).sendMessage(ChatColor.YELLOW + "This chest is locked.");
             }
@@ -234,29 +234,16 @@ public class BoltListener implements Listener {
         if (!(event.getWhoClicked() instanceof Player)) {
             return;
         }
-        if (event.getInventory().getHolder() instanceof Chest) {
-            ItemStack itemStack = event.getCurrentItem();
-            if (itemStack == null || itemStack.getType() != Material.PAPER) {
+        if (event.getInventory().getHolder() instanceof Chest ||
+            event.getInventory().getHolder() instanceof DoubleChest) {
+            BoltAPI.LockState lockState = BoltAPI.getLockState(event.getInventory());
+            if (lockState == BoltAPI.LockState.ALLOW_VIEW &&
+                !(BoltAPI.isChestOwner(event.getInventory(), event.getWhoClicked().getName())
+                  || BoltAPI.getAllowedUsers(event.getInventory()).contains(event.getWhoClicked().getName()))) {
+                event.setCancelled(true);
+                event.setResult(Event.Result.DENY);
                 return;
             }
-            HiltItemStack his = new HiltItemStack(itemStack);
-            if (his.getName().equals(ChatColor.GOLD + "Chest Status: " + ChatColor.RED + "Locked")) {
-                event.setCancelled(true);
-                event.setResult(Event.Result.DENY);
-            } else if (his.getName().equals(ChatColor.GOLD + "Chest Status: " + ChatColor.GREEN + "Unlocked")) {
-                event.setCancelled(true);
-                event.setResult(Event.Result.DENY);
-            }
-            if (BoltAPI.isChestOwner(event.getInventory(), event.getWhoClicked().getName())) {
-                if (his.getName().equals(ChatColor.GOLD + "Chest Status: " + ChatColor.RED + "Locked")) {
-                    his.setName(ChatColor.GOLD + "Chest Status: " + ChatColor.GREEN + "Unlocked");
-                    event.setCurrentItem(his);
-                } else if (his.getName().equals(ChatColor.GOLD + "Chest Status: " + ChatColor.GREEN + "Unlocked")) {
-                    his.setName(ChatColor.GOLD + "Chest Status: " + ChatColor.RED + "Locked");
-                    event.setCurrentItem(his);
-                }
-            }
-        } else if (event.getInventory().getHolder() instanceof DoubleChest) {
             ItemStack itemStack = event.getCurrentItem();
             if (itemStack == null || itemStack.getType() != Material.PAPER) {
                 return;
