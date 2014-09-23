@@ -249,19 +249,25 @@ public class BoltListener implements Listener {
                 return;
             }
             HiltItemStack his = new HiltItemStack(itemStack);
-            if (his.getName().equals(ChatColor.GOLD + "Chest Status: " + ChatColor.RED + "Locked")) {
+            if (his.getName().equals(ChatColor.GOLD + "Chest Status: " + BoltAPI.LockState.LOCKED.getDisplay())) {
                 event.setCancelled(true);
                 event.setResult(Event.Result.DENY);
-            } else if (his.getName().equals(ChatColor.GOLD + "Chest Status: " + ChatColor.GREEN + "Unlocked")) {
+            } else if (his.getName().equals(ChatColor.GOLD + "Chest Status: " + BoltAPI.LockState.UNLOCKED.getDisplay())) {
+                event.setCancelled(true);
+                event.setResult(Event.Result.DENY);
+            } else if (his.getName().equals(ChatColor.GOLD + "Chest Status: " + BoltAPI.LockState.ALLOW_VIEW.getDisplay())) {
                 event.setCancelled(true);
                 event.setResult(Event.Result.DENY);
             }
             if (BoltAPI.isChestOwner(event.getInventory(), event.getWhoClicked().getName())) {
-                if (his.getName().equals(ChatColor.GOLD + "Chest Status: " + ChatColor.RED + "Locked")) {
-                    his.setName(ChatColor.GOLD + "Chest Status: " + ChatColor.GREEN + "Unlocked");
+                if (his.getName().equals(ChatColor.GOLD + "Chest Status: " + BoltAPI.LockState.LOCKED.getDisplay())) {
+                    his.setName(ChatColor.GOLD + "Chest Status: " + BoltAPI.LockState.UNLOCKED.getDisplay());
                     event.setCurrentItem(his);
-                } else if (his.getName().equals(ChatColor.GOLD + "Chest Status: " + ChatColor.GREEN + "Unlocked")) {
-                    his.setName(ChatColor.GOLD + "Chest Status: " + ChatColor.RED + "Locked");
+                } else if (his.getName().equals(ChatColor.GOLD + "Chest Status: " + BoltAPI.LockState.UNLOCKED.getDisplay())) {
+                    his.setName(ChatColor.GOLD + "Chest Status: " + BoltAPI.LockState.ALLOW_VIEW.getDisplay());
+                    event.setCurrentItem(his);
+                } else if (his.getName().equals(ChatColor.GOLD + "Chest Status: " + BoltAPI.LockState.ALLOW_VIEW.getDisplay())) {
+                    his.setName(ChatColor.GOLD + "Chest Status: " + BoltAPI.LockState.LOCKED.getDisplay());
                     event.setCurrentItem(his);
                 }
             }
