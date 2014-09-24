@@ -281,10 +281,13 @@ public class BoltListener implements Listener {
     public void onItemSpawn(ItemSpawnEvent event) {
         ItemStack itemStack = event.getEntity().getItemStack();
         HiltItemStack his = new HiltItemStack(itemStack);
-        if (his.getName().equals(ChatColor.GOLD + "Chest Status: " + ChatColor.RED + "Locked")) {
+        if (his.getName().equals(ChatColor.GOLD + "Chest Status: " + BoltAPI.LockState.LOCKED)) {
             event.setCancelled(true);
         }
-        if (his.getName().equals(ChatColor.GOLD + "Chest Status: " + ChatColor.GREEN + "Unlocked")) {
+        if (his.getName().equals(ChatColor.GOLD + "Chest Status: " + BoltAPI.LockState.UNLOCKED)) {
+            event.setCancelled(true);
+        }
+        if (his.getName().equals(ChatColor.GOLD + "Chest Status: " + BoltAPI.LockState.ALLOW_VIEW)) {
             event.setCancelled(true);
         }
     }
