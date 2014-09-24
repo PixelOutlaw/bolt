@@ -141,14 +141,17 @@ public class BoltListener implements Listener {
             ItemStack old = chest.getInventory().getItem(chest.getInventory().getSize() / 2 - 1);
             if (old != null && old.getType() == Material.PAPER) {
                 HiltItemStack his = new HiltItemStack(old);
-                if (his.getName().equals(ChatColor.GOLD + "Chest Status: " + ChatColor.RED + "Locked")) {
+                if (his.getName().equals(ChatColor.GOLD + "Chest Status: " + BoltAPI.LockState.LOCKED)) {
                     chest.getInventory().setItem(chest.getInventory().getSize() / 2 - 1, null);
-                } else if (his.getName().equals(ChatColor.GOLD + "Chest Status: " + ChatColor.GREEN + "Unlocked")) {
+                } else if (his.getName().equals(ChatColor.GOLD + "Chest Status: " + BoltAPI.LockState.UNLOCKED)) {
+                    chest.getInventory().setItem(chest.getInventory().getSize() / 2 - 1, null);
+                }
+                else if (his.getName().equals(ChatColor.GOLD + "Chest Status: " + BoltAPI.LockState.ALLOW_VIEW)) {
                     chest.getInventory().setItem(chest.getInventory().getSize() / 2 - 1, null);
                 }
             }
             HiltItemStack hiltItemStack = new HiltItemStack(Material.PAPER);
-            hiltItemStack.setName(ChatColor.GOLD + "Chest Status: " + ChatColor.RED + "Locked");
+            hiltItemStack.setName(ChatColor.GOLD + "Chest Status: " + BoltAPI.LockState.LOCKED);
             List<String> lore = new ArrayList<>();
             lore.add(ChatColor.WHITE + "<Click to Toggle>");
             lore.add(ChatColor.GOLD + "Owner: " + ChatColor.WHITE + event.getPlayer().getName());

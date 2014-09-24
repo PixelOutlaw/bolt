@@ -41,6 +41,11 @@ public class BoltAPI {
             return UNLOCKED;
         }
 
+        @Override
+        public String toString() {
+            return getDisplay();
+        }
+
     }
 
     public static LockState getLockState(Inventory inventory) {
@@ -71,33 +76,6 @@ public class BoltAPI {
         LockState lockState = getLockState(inventory);
         return lockState == LockState.UNLOCKED || isChestOwner(inventory, opener.getName()) ||
                getAllowedUsers(inventory).contains(opener.getName());
-    }
-
-    public static boolean isChestLocked(Inventory inventory, Player opener) {
-        if (opener.hasPermission("bolt.anylock")) {
-            return false;
-        }
-        ItemStack itemStack = inventory.getItem(inventory.getSize() - 1);
-        if (itemStack == null || itemStack.getType() != Material.PAPER) {
-            return false;
-        }
-        HiltItemStack hiltItemStack = new HiltItemStack(itemStack);
-        if (hiltItemStack.getName().equals(ChatColor.GOLD + "Chest Status: " + ChatColor.GREEN + "Unlocked")) {
-            return false;
-        }
-        String line1 = ChatColor.stripColor(hiltItemStack.getLore().get(1)).replace("Owner: ", "").trim();
-        if (line1.equals(opener.getName())) {
-            return false;
-        }
-        for (String s : hiltItemStack.getLore()) {
-            String strip = ChatColor.stripColor(s);
-            if (strip.equalsIgnoreCase(opener.getName()) || strip.equalsIgnoreCase("Everybody") ||
-                    strip.equalsIgnoreCase("Anybody") || strip.equalsIgnoreCase("Everyone") ||
-                    strip.equalsIgnoreCase("Anyone")) {
-                return false;
-            }
-        }
-        return true;
     }
 
     public static boolean isChestOwner(Inventory inventory, String opener) {
