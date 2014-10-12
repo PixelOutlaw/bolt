@@ -61,21 +61,16 @@ public class BoltAPI {
     }
 
     public static boolean canOpen(Inventory inventory, Player opener) {
-        if (opener.hasPermission("bolt.anylock")) {
-            return true;
-        }
         LockState lockState = getLockState(inventory);
         return lockState == LockState.UNLOCKED || lockState == LockState.ALLOW_VIEW ||
-               isChestOwner(inventory, opener.getName()) || getAllowedUsers(inventory).contains(opener.getName());
+               isChestOwner(inventory, opener.getName()) || getAllowedUsers(inventory).contains(opener.getName())
+               || opener.hasPermission("bolt.anylock");
     }
 
     public static boolean canUse(Inventory inventory, Player opener) {
-        if (opener.hasPermission("bolt.anylock")) {
-            return true;
-        }
         LockState lockState = getLockState(inventory);
         return lockState == LockState.UNLOCKED || isChestOwner(inventory, opener.getName()) ||
-               getAllowedUsers(inventory).contains(opener.getName());
+               getAllowedUsers(inventory).contains(opener.getName()) || opener.hasPermission("bolt.anylock");
     }
 
     public static boolean isChestOwner(Inventory inventory, String opener) {
