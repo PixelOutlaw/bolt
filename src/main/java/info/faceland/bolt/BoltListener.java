@@ -239,10 +239,7 @@ public class BoltListener implements Listener {
         }
         if (event.getInventory().getHolder() instanceof Chest ||
             event.getInventory().getHolder() instanceof DoubleChest) {
-            BoltAPI.LockState lockState = BoltAPI.getLockState(event.getInventory());
-            if (lockState == BoltAPI.LockState.ALLOW_VIEW &&
-                !(BoltAPI.isChestOwner(event.getInventory(), event.getWhoClicked().getName())
-                  || BoltAPI.getAllowedUsers(event.getInventory()).contains(event.getWhoClicked().getName()))) {
+            if (!BoltAPI.canUse(event.getInventory(), (Player) event.getWhoClicked())) {
                 event.setCancelled(true);
                 event.setResult(Event.Result.DENY);
                 return;
