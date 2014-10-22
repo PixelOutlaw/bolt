@@ -15,6 +15,7 @@ import org.bukkit.event.entity.ItemSpawnEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryMoveItemEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.DoubleChestInventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
@@ -286,6 +287,26 @@ public class BoltListener implements Listener {
         }
         if (his.getName().equals(ChatColor.GOLD + "Chest Status: " + BoltAPI.LockState.ALLOW_VIEW)) {
             event.setCancelled(true);
+        }
+    }
+
+    @EventHandler(priority = EventPriority.LOWEST)
+    public void onPlayerInteractEvent(PlayerInteractEvent event) {
+        if (event.getClickedBlock().getType() != Material.IRON_DOOR_BLOCK && event.getClickedBlock().getType() != Material.WOODEN_DOOR) {
+            return;
+        }
+        Block below = event.getClickedBlock().getRelative(0, -2, 0);
+        if (below.getType() != Material.CHEST) {
+            below = event.getClickedBlock().getRelative(0, -3, 0);
+            if (below.getType() != Material.CHEST) {
+                return;
+            }
+        }
+        InventoryHolder c = (InventoryHolder) below.getState();
+        if (!BoltAPI.canUse(c.getInventory(), event.getPlayer())) {
+            event.setCancelled(true);
+            event.setUseInteractedBlock(Event.Result.DENY);
+            event.setUseItemInHand(Event.Result.DENY);
         }
     }
 
