@@ -170,8 +170,29 @@ public class BoltListener implements Listener {
         }
     }
 
+    @EventHandler(priority = EventPriority.LOW)
+    public void onBlockBreakDoor(BlockBreakEvent event) {
+        if (event.isCancelled()) {
+            return;
+        }
+        if (event.getBlock().getType() != Material.IRON_DOOR_BLOCK && event.getBlock().getType() == Material.WOODEN_DOOR) {
+            return;
+        }
+        Block below = event.getBlock().getRelative(0, -2, 0);
+        if (below.getType() != Material.CHEST) {
+            below = event.getBlock().getRelative(0, -3, 0);
+            if (below.getType() != Material.CHEST) {
+                return;
+            }
+        }
+        InventoryHolder c = (InventoryHolder) below.getState();
+        if (!BoltAPI.isChestOwner(c.getInventory(), event.getPlayer().getName())) {
+            event.setCancelled(true);
+        }
+    }
+
     @EventHandler(priority = EventPriority.LOWEST)
-    public void onBlockBreakEvent(BlockBreakEvent event) {
+    public void onBlockBreakChest(BlockBreakEvent event) {
         if (!(event.getBlock().getState() instanceof Chest) && !(event.getBlock().getState() instanceof DoubleChest)) {
             return;
         }
