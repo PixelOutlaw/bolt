@@ -198,9 +198,11 @@ public class BoltListener implements Listener {
         }
         if (!BoltAPI.isChestOwner(((InventoryHolder) event.getBlock().getState()).getInventory(),
                                   event.getPlayer().getName())) {
-            event.setCancelled(true);
-            event.getPlayer().sendMessage(ChatColor.RED + "You cannot break this chest.");
-            return;
+            if (!event.getPlayer().hasPermission("bolt.anylock")) {
+                event.setCancelled(true);
+                event.getPlayer().sendMessage(ChatColor.RED + "You cannot break this chest.");
+                return;
+            }
         }
         InventoryHolder holder = (InventoryHolder) event.getBlock().getState();
         ItemStack itemStack = holder.getInventory().getItem(holder.getInventory().getSize() - 1);
