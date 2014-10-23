@@ -315,13 +315,14 @@ public class BoltListener implements Listener {
 
     @EventHandler(priority = EventPriority.LOWEST)
     public void onPlayerInteractEvent(PlayerInteractEvent event) {
-        if (event.getClickedBlock().getType() != Material.IRON_DOOR_BLOCK && event.getClickedBlock().getType() != Material.WOODEN_DOOR) {
+        if (event.getClickedBlock() == null || event.getClickedBlock().getType() != Material.IRON_DOOR_BLOCK
+            && event.getClickedBlock().getType() != Material.WOODEN_DOOR) {
             return;
         }
         Block below = event.getClickedBlock().getRelative(0, -2, 0);
-        if (below.getType() != Material.CHEST) {
+        if (below == null || below.getType() != Material.CHEST) {
             below = event.getClickedBlock().getRelative(0, -3, 0);
-            if (below.getType() != Material.CHEST) {
+            if (below == null || below.getType() != Material.CHEST) {
                 return;
             }
         }
