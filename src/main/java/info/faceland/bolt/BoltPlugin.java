@@ -14,10 +14,10 @@
  */
 package info.faceland.bolt;
 
+import com.tealcube.minecraft.bukkit.facecore.plugin.FacePlugin;
+import com.tealcube.minecraft.bukkit.kern.methodcommand.CommandHandler;
 import org.bukkit.Bukkit;
 import org.bukkit.event.HandlerList;
-import org.nunnerycode.facecore.plugin.FacePlugin;
-import org.nunnerycode.kern.methodcommand.CommandHandler;
 
 public class BoltPlugin extends FacePlugin {
 

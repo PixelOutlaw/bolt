@@ -14,12 +14,14 @@
  */
 package info.faceland.bolt;
 
+import com.tealcube.minecraft.bukkit.kern.methodcommand.Arg;
+import com.tealcube.minecraft.bukkit.kern.methodcommand.Command;
+import com.tealcube.minecraft.bukkit.kern.shade.google.common.collect.Sets;
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.Chest;
 import org.bukkit.entity.Player;
-import org.nunnerycode.kern.methodcommand.Arg;
-import org.nunnerycode.kern.methodcommand.Command;
 
 import java.util.List;
 
@@ -27,7 +29,7 @@ public class BoltCommand {
 
     @Command(identifier = "locks add", permissions = "bolt.add")
     public void addSubcommand(Player sender, @Arg(name = "target") String target) {
-        Block b = sender.getTargetBlock(null, 10);
+        Block b = sender.getTargetBlock(Sets.newHashSet(Material.AIR), 10);
         if (b == null || !(b.getState() instanceof Chest)) {
             sender.sendMessage(ChatColor.RED + "Add failed. That block is not a chest.");
             return;
@@ -51,7 +53,7 @@ public class BoltCommand {
 
     @Command(identifier = "locks remove", permissions = "bolt.remove")
     public void removeSubcommand(Player sender, @Arg(name = "target") String target) {
-        Block b = sender.getTargetBlock(null, 10);
+        Block b = sender.getTargetBlock(Sets.newHashSet(Material.AIR), 10);
         if (b == null || !(b.getState() instanceof Chest)) {
             sender.sendMessage(ChatColor.RED + "Remove failed. That block is not a chest.");
             return;
@@ -71,7 +73,7 @@ public class BoltCommand {
 
     @Command(identifier = "locks makenormal", permissions = "bolt.makenormal")
     public void makeNormalSubcommand(Player sender) {
-        Block b = sender.getTargetBlock(null, 10);
+        Block b = sender.getTargetBlock(Sets.newHashSet(Material.AIR), 10);
         if (b == null || !(b.getState() instanceof Chest)) {
             sender.sendMessage(ChatColor.RED + "You cannot make that normal.");
             return;
@@ -87,7 +89,7 @@ public class BoltCommand {
 
     @Command(identifier = "locks setowner", permissions = "bolt.setowner")
     public void setOwnerSubcommand(Player sender, @Arg(name = "target") String target) {
-        Block b = sender.getTargetBlock(null, 10);
+        Block b = sender.getTargetBlock(Sets.newHashSet(Material.AIR), 10);
         if (b == null || !(b.getState() instanceof Chest)) {
             sender.sendMessage(ChatColor.RED + "You cannot set an owner.");
             return;

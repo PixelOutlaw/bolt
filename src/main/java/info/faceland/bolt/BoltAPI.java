@@ -14,13 +14,13 @@
  */
 package info.faceland.bolt;
 
+import com.tealcube.minecraft.bukkit.facecore.shade.hilt.HiltItemStack;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.DoubleChestInventory;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.nunnerycode.facecore.hilt.HiltItemStack;
 
 import java.util.ArrayList;
 import java.util.List;
