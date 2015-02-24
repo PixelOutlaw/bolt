@@ -77,19 +77,19 @@ public class BoltAPI {
     public static boolean canOpen(Inventory inventory, Player opener) {
         LockState lockState = getLockState(inventory);
         return lockState == LockState.UNLOCKED || lockState == LockState.ALLOW_VIEW ||
-               isChestOwner(inventory, opener.getName()) || getAllowedUsers(inventory).contains(opener.getName())
+               isChestOwner(inventory, opener.getName()) || containsIgnoreCase(getAllowedUsers(inventory), opener.getName())
                || opener.hasPermission("bolt.anylock");
     }
 
     public static boolean canUse(Inventory inventory, Player opener) {
         LockState lockState = getLockState(inventory);
         return lockState == LockState.UNLOCKED || isChestOwner(inventory, opener.getName()) ||
-               getAllowedUsers(inventory).contains(opener.getName()) || opener.hasPermission("bolt.anylock");
+               containsIgnoreCase(getAllowedUsers(inventory), opener.getName()) || opener.hasPermission("bolt.anylock");
     }
 
     public static boolean isChestOwner(Inventory inventory, String opener) {
         String owner = getChestOwnerName(inventory);
-        return owner == null || opener != null && opener.equals(owner);
+        return owner == null || opener != null && opener.equalsIgnoreCase(owner);
     }
 
     public static String getChestOwnerName(Inventory inventory) {
@@ -198,6 +198,18 @@ public class BoltAPI {
         }
         hiltItemStack.setLore(lore);
         inventory.setItem(inventory.getSize() - 1, hiltItemStack);
+    }
+
+    private static boolean containsIgnoreCase(List<String> list, String name) {
+        if (list == null || name == null) {
+            return false;
+        }
+        for (String s : list) {
+            if (s.equalsIgnoreCase(name)) {
+                return true;
+            }
+        }
+        return false;
     }
 
 }
