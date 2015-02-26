@@ -1,7 +1,7 @@
 name: @NAME@
 version: @VERSION@
 main: info.faceland.bolt.BoltPlugin
-depend: [facecore]
+depend: [Facecore]
 
 permissions:
   bolt.anylock:
