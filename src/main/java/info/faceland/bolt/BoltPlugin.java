@@ -1,5 +1,5 @@
 /*
- * This file is part of Blight, licensed under the ISC License.
+ * This file is part of Bolt, licensed under the ISC License.
  *
  * Copyright (c) 2014 Richard Harrah
  *
