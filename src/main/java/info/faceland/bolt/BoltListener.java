@@ -189,7 +189,7 @@ public class BoltListener implements Listener {
         if (event.isCancelled()) {
             return;
         }
-        if (event.getBlock().getType() != Material.IRON_DOOR_BLOCK && event.getBlock().getType() == Material.WOODEN_DOOR) {
+        if (event.getBlock().getType() != Material.IRON_DOOR_BLOCK && event.getBlock().getType() != Material.WOODEN_DOOR) {
             return;
         }
         Block below = event.getBlock().getRelative(0, -2, 0);
