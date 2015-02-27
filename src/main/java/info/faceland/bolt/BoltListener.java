@@ -25,6 +25,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.entity.ItemSpawnEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryMoveItemEvent;
@@ -35,6 +36,7 @@ import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 public class BoltListener implements Listener {
@@ -43,6 +45,17 @@ public class BoltListener implements Listener {
 
     public BoltListener(BoltPlugin plugin) {
         this.plugin = plugin;
+    }
+
+    @EventHandler(priority = EventPriority.LOWEST)
+    public void onEntityExplode(EntityExplodeEvent event) {
+        Iterator<Block> blockIterator = event.blockList().iterator();
+        while (blockIterator.hasNext()) {
+            Block b = blockIterator.next();
+            if (b.getState() instanceof Chest || b.getState() instanceof DoubleChest) {
+                blockIterator.remove();
+            }
+        }
     }
 
     @EventHandler(priority = EventPriority.LOWEST)
