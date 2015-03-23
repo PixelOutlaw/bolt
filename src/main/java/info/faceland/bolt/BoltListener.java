@@ -75,7 +75,8 @@ public class BoltListener implements Listener {
         Block b = event.getBlockPlaced();
         if (event.getBlockPlaced().getState() instanceof Hopper) {
             BlockFace[] check =
-                    {BlockFace.UP, BlockFace.DOWN, BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST};
+                    {BlockFace.UP, BlockFace.DOWN, BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST, BlockFace.NORTH_EAST,
+                            BlockFace.NORTH_WEST, BlockFace.SOUTH_EAST, BlockFace.SOUTH_WEST};
             for (BlockFace bf : check) {
                 if (b.getRelative(bf).getState() instanceof Chest) {
                     if (!BoltAPI.isChestOwner(((Chest) b.getRelative(bf).getState()).getInventory(),
@@ -97,7 +98,8 @@ public class BoltListener implements Listener {
             }
         } else if (event.getBlockPlaced().getState() instanceof Chest) {
             BlockFace[] check =
-                    {BlockFace.UP, BlockFace.DOWN, BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST};
+                    {BlockFace.UP, BlockFace.DOWN, BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST, BlockFace.NORTH_EAST,
+                            BlockFace.NORTH_WEST, BlockFace.SOUTH_EAST, BlockFace.SOUTH_WEST};
             for (BlockFace bf : check) {
                 if (b.getRelative(bf).getState() instanceof Chest) {
                     if (!BoltAPI.isChestOwner(((Chest) b.getRelative(bf).getState()).getInventory(),
