@@ -89,7 +89,7 @@ public class BoltAPI {
 
     public static boolean isChestOwner(Inventory inventory, String opener) {
         String owner = getChestOwnerName(inventory);
-        return owner == null || opener != null && opener.equalsIgnoreCase(owner);
+        return opener != null && opener.equalsIgnoreCase(owner);
     }
 
     public static String getChestOwnerName(Inventory inventory) {
