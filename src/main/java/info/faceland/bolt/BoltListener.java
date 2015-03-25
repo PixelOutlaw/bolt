@@ -60,14 +60,11 @@ public class BoltListener implements Listener {
 
     @EventHandler(priority = EventPriority.LOWEST)
     public void onInventoryMoveItem(InventoryMoveItemEvent event) {
-        ItemStack is = event.getItem();
-        if (is == null || is.getType() != Material.PAPER) {
+        String name = BoltAPI.getChestOwnerName(event.getSource());
+        if (name == null) {
             return;
         }
-        HiltItemStack his = new HiltItemStack(event.getItem());
-        if (his.getName().startsWith(ChatColor.GOLD + "Chest Status:")) {
-            event.setCancelled(true);
-        }
+        event.setCancelled(true);
     }
 
     @EventHandler(priority = EventPriority.LOWEST)
@@ -78,9 +75,9 @@ public class BoltListener implements Listener {
                     {BlockFace.UP, BlockFace.DOWN, BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST, BlockFace.NORTH_EAST,
                             BlockFace.NORTH_WEST, BlockFace.SOUTH_EAST, BlockFace.SOUTH_WEST};
             for (BlockFace bf : check) {
-                if (b.getRelative(bf).getState() instanceof Chest) {
-                    if (!BoltAPI.isChestOwner(((Chest) b.getRelative(bf).getState()).getInventory(),
-                                              event.getPlayer().getName())) {
+                Block relative = b.getRelative(bf);
+                if (relative.getState() instanceof Chest) {
+                    if (!BoltAPI.isChestOwner(((Chest) relative.getState()).getInventory(), event.getPlayer().getName())) {
                         event.setCancelled(true);
                         event.getPlayer().sendMessage(ChatColor.YELLOW +
                                                       "You cannot place hoppers next to chests you do not own.");
@@ -101,17 +98,16 @@ public class BoltListener implements Listener {
                     {BlockFace.UP, BlockFace.DOWN, BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST, BlockFace.NORTH_EAST,
                             BlockFace.NORTH_WEST, BlockFace.SOUTH_EAST, BlockFace.SOUTH_WEST};
             for (BlockFace bf : check) {
-                if (b.getRelative(bf).getState() instanceof Chest) {
-                    if (!BoltAPI.isChestOwner(((Chest) b.getRelative(bf).getState()).getInventory(),
-                                              event.getPlayer().getName())) {
+                Block relative = b.getRelative(bf);
+                if (relative.getState() instanceof Chest) {
+                    if (!BoltAPI.isChestOwner(((Chest) relative.getState()).getInventory(), event.getPlayer().getName())) {
                         event.setCancelled(true);
                         event.getPlayer().sendMessage(ChatColor.YELLOW +
                                                       "You cannot place chests next to chests you do not own.");
                         return;
                     }
-                } else if (b.getRelative(bf).getState() instanceof DoubleChest) {
-                    if (!BoltAPI.isChestOwner(((DoubleChest) b.getRelative(bf).getState()).getInventory(),
-                                              event.getPlayer().getName())) {
+                } else if (relative.getState() instanceof DoubleChest) {
+                    if (!BoltAPI.isChestOwner(((DoubleChest) relative.getState()).getInventory(), event.getPlayer().getName())) {
                         event.setCancelled(true);
                         event.getPlayer().sendMessage(ChatColor.YELLOW +
                                                       "You cannot place chests next to chests you do not own.");
@@ -149,17 +145,16 @@ public class BoltListener implements Listener {
             BlockFace[] check =
                     {BlockFace.UP, BlockFace.DOWN, BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST};
             for (BlockFace bf : check) {
+                Block relative = b.getRelative(bf);
                 if (b.getRelative(bf).getState() instanceof Chest) {
-                    if (!BoltAPI.isChestOwner(((Chest) b.getRelative(bf).getState()).getInventory(),
-                                              event.getPlayer().getName())) {
+                    if (!BoltAPI.isChestOwner(((Chest) relative.getState()).getInventory(), event.getPlayer().getName())) {
                         event.setCancelled(true);
                         event.getPlayer().sendMessage(ChatColor.YELLOW +
                                                       "You cannot place chests next to chests you do not own.");
                         return;
                     }
                 } else if (b.getRelative(bf).getState() instanceof DoubleChest) {
-                    if (!BoltAPI.isChestOwner(((DoubleChest) b.getRelative(bf).getState()).getInventory(),
-                                              event.getPlayer().getName())) {
+                    if (!BoltAPI.isChestOwner(((DoubleChest) relative.getState()).getInventory(), event.getPlayer().getName())) {
                         event.setCancelled(true);
                         event.getPlayer().sendMessage(ChatColor.YELLOW +
                                                       "You cannot place chests next to chests you do not own.");
