@@ -102,14 +102,28 @@ public class BoltAPI {
                 }
             }
             HiltItemStack hiltItemStack = new HiltItemStack(itemStack);
-            return ChatColor.stripColor(hiltItemStack.getLore().get(1)).replace("Owner: ", "").trim();
+            if (hiltItemStack.getLore() == null) {
+                return null;
+            }
+            if (hiltItemStack.getLore().size() < 2) {
+                return null;
+            }
+            String ownerLine = hiltItemStack.getLore().get(1);
+            return ChatColor.stripColor(ownerLine).replace("Owner: ", "").trim();
         } else {
             ItemStack itemStack = inventory.getItem(inventory.getSize() - 1);
             if (itemStack == null || itemStack.getType() != Material.PAPER) {
                 return null;
             }
             HiltItemStack hiltItemStack = new HiltItemStack(itemStack);
-            return ChatColor.stripColor(hiltItemStack.getLore().get(1)).replace("Owner: ", "").trim();
+            if (hiltItemStack.getLore() == null) {
+                return null;
+            }
+            if (hiltItemStack.getLore().size() < 2) {
+                return null;
+            }
+            String ownerLine = hiltItemStack.getLore().get(1);
+            return ChatColor.stripColor(ownerLine).replace("Owner: ", "").trim();
         }
     }
 
