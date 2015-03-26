@@ -60,11 +60,11 @@ public class BoltListener implements Listener {
 
     @EventHandler(priority = EventPriority.LOWEST)
     public void onInventoryMoveItem(InventoryMoveItemEvent event) {
-        String name = BoltAPI.getChestOwnerName(event.getSource());
-        if (name == null) {
-            return;
+        String sourceName = BoltAPI.getChestOwnerName(event.getSource());
+        String destinationName = BoltAPI.getChestOwnerName(event.getDestination());
+        if (sourceName != null || destinationName != null) {
+            event.setCancelled(true);
         }
-        event.setCancelled(true);
     }
 
     @EventHandler(priority = EventPriority.LOWEST)
