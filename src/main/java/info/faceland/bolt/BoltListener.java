@@ -19,6 +19,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.*;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.minecart.HopperMinecart;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -60,9 +61,17 @@ public class BoltListener implements Listener {
 
     @EventHandler(priority = EventPriority.LOWEST)
     public void onInventoryMoveItem(InventoryMoveItemEvent event) {
-        String sourceName = BoltAPI.getChestOwnerName(event.getSource());
-        String destinationName = BoltAPI.getChestOwnerName(event.getDestination());
-        if (sourceName != null || destinationName != null) {
+        if ((event.getSource().getHolder() instanceof Chest || event.getSource().getHolder() instanceof DoubleChest)
+                && event.getInitiator().getHolder() instanceof HopperMinecart) {
+            event.setCancelled(true);
+            return;
+        }
+        ItemStack is = event.getItem();
+        if (is == null || is.getType() != Material.PAPER) {
+            return;
+        }
+        HiltItemStack his = new HiltItemStack(event.getItem());
+        if (his.getName().startsWith(ChatColor.GOLD + "Chest Status:")) {
             event.setCancelled(true);
         }
     }
