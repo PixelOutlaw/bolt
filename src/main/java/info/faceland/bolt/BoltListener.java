@@ -279,12 +279,12 @@ public class BoltListener implements Listener {
         if (event.getInventory().getHolder() instanceof Chest) {
             if (!BoltAPI.canOpen(event.getInventory(), (Player) event.getPlayer())) {
                 event.setCancelled(true);
-                ((Player) event.getPlayer()).sendMessage(ChatColor.YELLOW + "This chest is locked.");
+                event.getPlayer().sendMessage(ChatColor.YELLOW + "This chest is locked.");
             }
         } else if (event.getInventory().getHolder() instanceof DoubleChest) {
             if (!BoltAPI.canOpen(event.getInventory(), (Player) event.getPlayer())) {
                 event.setCancelled(true);
-                ((Player) event.getPlayer()).sendMessage(ChatColor.YELLOW + "This chest is locked.");
+                event.getPlayer().sendMessage(ChatColor.YELLOW + "This chest is locked.");
             }
         }
     }

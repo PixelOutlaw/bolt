@@ -76,7 +76,7 @@ public class BoltAPI {
 
     public static boolean canOpen(Inventory inventory, Player opener) {
         LockState lockState = getLockState(inventory);
-        return lockState == LockState.UNLOCKED || lockState == LockState.ALLOW_VIEW ||
+        return lockState == LockState.UNLOCKED || lockState == LockState.ALLOW_VIEW || getChestOwnerName(inventory) == null ||
                isChestOwner(inventory, opener.getName()) || containsIgnoreCase(getAllowedUsers(inventory), opener.getName())
                || opener.hasPermission("bolt.anylock");
     }
