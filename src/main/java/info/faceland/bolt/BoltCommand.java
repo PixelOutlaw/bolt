@@ -22,7 +22,7 @@
  */
 package info.faceland.bolt;
 
-import com.tealcube.minecraft.bukkit.kern.shade.google.common.collect.Sets;
+import com.tealcube.minecraft.bukkit.shade.google.common.collect.Sets;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
