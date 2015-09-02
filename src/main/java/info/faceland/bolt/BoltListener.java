@@ -237,6 +237,9 @@ public class BoltListener implements Listener {
         if (!(event.getBlock().getState() instanceof Chest) && !(event.getBlock().getState() instanceof DoubleChest)) {
             return;
         }
+        if (BoltAPI.getChestOwnerName(((InventoryHolder) event.getBlock().getState()).getInventory()) == null) {
+            return;
+        }
         if (!BoltAPI.isChestOwner(((InventoryHolder) event.getBlock().getState()).getInventory(),
                                   event.getPlayer().getName())) {
             if (!event.getPlayer().hasPermission("bolt.anylock")) {
