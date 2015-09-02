@@ -211,27 +211,6 @@ public class BoltListener implements Listener {
         }
     }
 
-    @EventHandler(priority = EventPriority.LOW)
-    public void onBlockBreakDoor(BlockBreakEvent event) {
-        if (event.isCancelled()) {
-            return;
-        }
-        if (event.getBlock().getType() != Material.IRON_DOOR_BLOCK && event.getBlock().getType() != Material.WOODEN_DOOR) {
-            return;
-        }
-        Block below = event.getBlock().getRelative(0, -2, 0);
-        if (below.getType() != Material.CHEST) {
-            below = event.getBlock().getRelative(0, -3, 0);
-            if (below.getType() != Material.CHEST) {
-                return;
-            }
-        }
-        InventoryHolder c = (InventoryHolder) below.getState();
-        if (!BoltAPI.isChestOwner(c.getInventory(), event.getPlayer().getName())) {
-            event.setCancelled(true);
-        }
-    }
-
     @EventHandler(priority = EventPriority.LOWEST)
     public void onBlockBreakChest(BlockBreakEvent event) {
         if (!(event.getBlock().getState() instanceof Chest) && !(event.getBlock().getState() instanceof DoubleChest)) {
@@ -354,27 +333,6 @@ public class BoltListener implements Listener {
         }
         if (his.getName().equals(ChatColor.GOLD + "Chest Status: " + BoltAPI.LockState.ALLOW_VIEW)) {
             event.setCancelled(true);
-        }
-    }
-
-    @EventHandler(priority = EventPriority.LOWEST)
-    public void onPlayerInteractEvent(PlayerInteractEvent event) {
-        if (event.getClickedBlock() == null || event.getClickedBlock().getType() != Material.IRON_DOOR_BLOCK
-            && event.getClickedBlock().getType() != Material.WOODEN_DOOR) {
-            return;
-        }
-        Block below = event.getClickedBlock().getRelative(0, -2, 0);
-        if (below == null || below.getType() != Material.CHEST) {
-            below = event.getClickedBlock().getRelative(0, -3, 0);
-            if (below == null || below.getType() != Material.CHEST) {
-                return;
-            }
-        }
-        InventoryHolder c = (InventoryHolder) below.getState();
-        if (!BoltAPI.canUse(c.getInventory(), event.getPlayer())) {
-            event.setCancelled(true);
-            event.setUseInteractedBlock(Event.Result.DENY);
-            event.setUseItemInHand(Event.Result.DENY);
         }
     }
 
