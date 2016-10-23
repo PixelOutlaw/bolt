@@ -22,6 +22,7 @@
  */
 package info.faceland.bolt;
 
+import com.tealcube.minecraft.bukkit.TextUtils;
 import com.tealcube.minecraft.bukkit.shade.google.common.collect.Sets;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -31,6 +32,7 @@ import org.bukkit.entity.Player;
 import se.ranzdo.bukkit.methodcommand.Arg;
 import se.ranzdo.bukkit.methodcommand.Command;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class BoltCommand {
@@ -48,8 +50,8 @@ public class BoltCommand {
             return;
         }
         List<String> allowed = BoltAPI.getAllowedUsers(chest.getInventory());
-        if (allowed.size() >= 4) {
-            sender.sendMessage(ChatColor.RED + "You already have four people added to that chest.");
+        if (allowed.size() >= 8) {
+            sender.sendMessage(ChatColor.RED + "This chest already has the maximum amount of people added!");
             return;
         }
         allowed.add(target.length() > 16 ? target.substring(0, 15) : target);
@@ -96,16 +98,42 @@ public class BoltCommand {
     }
 
     @Command(identifier = "locks setowner", permissions = "bolt.setowner")
-    public void setOwnerSubcommand(Player sender, @Arg(name = "target") String target) {
-        Block b = sender.getTargetBlock(Sets.newHashSet(Material.AIR), 10);
-        if (b == null || !(b.getState() instanceof Chest)) {
-            sender.sendMessage(ChatColor.RED + "You cannot set an owner.");
-            return;
+    public void setOwnerSubcommand(Player sender, @Arg(name = "OldOwner") String oldOwner, @Arg(name = "NewOwner")
+            String newOwner, @Arg(name = "Radius") int radius) {
+        Chest chest;
+        int changed = 0;
+        if (radius > 15) {
+            sender.sendMessage(TextUtils.color("&cMaximum radius is &f15&c! Are you tryin' to break shit? ._."));
+            radius = 15;
         }
-        Chest chest = (Chest) b.getState();
-        BoltAPI.setChestOwner(chest.getInventory(), target.length() > 16 ? target.substring(0, 15) : target);
-        sender.sendMessage(ChatColor.GREEN + "You made " + ChatColor.WHITE + target + ChatColor.GREEN +
-                                   " the owner of that chest.");
+        sender.sendMessage(TextUtils.color("&aScanning in radius &f" + radius + " &afor chests to convert..."));
+        for (Block bloc : getBlocks(sender.getLocation().getBlock(), radius)) {
+            if (bloc.getType() != Material.CHEST && bloc.getType() != Material.TRAPPED_CHEST) {
+                continue;
+            }
+            chest = (Chest) bloc.getState();
+            if (BoltAPI.isChestOwner(chest.getInventory(), oldOwner)) {
+                BoltAPI.setChestOwner(chest.getInventory(), newOwner);
+                changed++;
+            }
+        }
+        sender.sendMessage(TextUtils.color("&aChanged ownership of &f" + changed + " &achests from &e" + oldOwner +
+                " &ato &e" + newOwner + "&a!"));
     }
 
+    private List<Block> getBlocks(Block start, int radius){
+        if (radius <= 0) {
+            return new ArrayList<>(0);
+        }
+        int iterations = (radius * 2) + 1;
+        List<Block> blocks = new ArrayList<>(iterations * iterations * iterations);
+        for (int x = -radius; x <= radius; x++) {
+            for (int y = -radius; y <= radius; y++) {
+                for (int z = -radius; z <= radius; z++) {
+                    blocks.add(start.getRelative(x, y, z));
+                }
+            }
+        }
+        return blocks;
+    }
 }
