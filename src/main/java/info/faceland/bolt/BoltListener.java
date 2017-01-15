@@ -69,17 +69,11 @@ public class BoltListener implements Listener {
 
     @EventHandler(priority = EventPriority.LOWEST)
     public void onInventoryMoveItem(InventoryMoveItemEvent event) {
-        if ((event.getSource().getHolder() instanceof Chest || event.getSource().getHolder() instanceof DoubleChest)
-                && event.getInitiator().getHolder() instanceof HopperMinecart) {
-            event.setCancelled(true);
-            return;
-        }
         ItemStack is = event.getItem();
         if (is == null || is.getType() != Material.PAPER) {
             return;
         }
-        HiltItemStack his = new HiltItemStack(event.getItem());
-        if (his.getName().startsWith(ChatColor.GOLD + "Chest Status:")) {
+        if (is.getItemMeta().getDisplayName().startsWith(ChatColor.GOLD + "Chest Status:")) {
             event.setCancelled(true);
         }
     }
