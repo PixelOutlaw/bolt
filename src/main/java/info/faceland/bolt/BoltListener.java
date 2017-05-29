@@ -24,6 +24,7 @@ package info.faceland.bolt;
 
 import io.pixeloutlaw.minecraft.spigot.hilt.HiltItemStack;
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.*;
 import org.bukkit.entity.Player;
@@ -40,6 +41,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryMoveItemEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.inventory.DoubleChestInventory;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 
@@ -332,6 +334,39 @@ public class BoltListener implements Listener {
         }
         if (his.getName().equals(ChatColor.GOLD + "Chest Status: " + BoltAPI.LockState.ALLOW_VIEW)) {
             event.setCancelled(true);
+        }
+    }
+
+    @EventHandler(priority = EventPriority.LOWEST)
+    public void onOpenProximityCheck(InventoryOpenEvent event) {
+        if (!(event.getPlayer() instanceof Player)) {
+            return;
+        }
+        if (!(event.getInventory().getHolder() instanceof  Hopper) && !(event.getInventory().getHolder() instanceof Furnace)) {
+            return;
+        }
+        Location sourceLoc = event.getInventory().getLocation();
+        int xInit = sourceLoc.getBlockX() - 2;
+        int yInit = sourceLoc.getBlockY() - 2;
+        int zInit = sourceLoc.getBlockZ() - 2;
+        Block testBlock;
+        Location testLoc = new Location(sourceLoc.getWorld(), xInit, yInit, zInit);
+        for(int x = xInit; x < xInit + 5; x++){
+            testLoc.setX(x);
+            for(int y = yInit; y < yInit + 5; y++){
+                testLoc.setY(y);
+                for(int z = zInit; z < zInit + 5; z++){
+                    testLoc.setZ(z);
+                    testBlock = testLoc.getBlock();
+                    if(testBlock.getType().equals(Material.CHEST) || testBlock.getType().equals(Material.TRAPPED_CHEST)) {
+                        if(!BoltAPI.canUse(((InventoryHolder)testBlock.getState()).getInventory(), (Player) event.getPlayer())) {
+                            event.getPlayer().sendMessage(ChatColor.YELLOW + "you can't do that m8, it's too close to an owned chest");
+                            event.setCancelled(true);
+                            return;
+                        }
+                    }
+                }
+            }
         }
     }
 
