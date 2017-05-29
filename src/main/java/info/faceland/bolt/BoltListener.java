@@ -342,25 +342,24 @@ public class BoltListener implements Listener {
         if (!(event.getPlayer() instanceof Player)) {
             return;
         }
-        if (!(event.getInventory().getHolder() instanceof  Hopper) && !(event.getInventory().getHolder() instanceof Furnace)) {
+        if (!(event.getInventory().getHolder() instanceof Hopper || event.getInventory().getHolder() instanceof Furnace)) {
             return;
         }
-        Location sourceLoc = event.getInventory().getLocation();
-        int xInit = sourceLoc.getBlockX() - 2;
-        int yInit = sourceLoc.getBlockY() - 2;
-        int zInit = sourceLoc.getBlockZ() - 2;
+        Location loc = event.getInventory().getLocation();
+        int xInit = loc.getBlockX();
+        int yInit = loc.getBlockY();
+        int zInit = loc.getBlockZ();
         Block testBlock;
-        Location testLoc = new Location(sourceLoc.getWorld(), xInit, yInit, zInit);
-        for(int x = xInit; x < xInit + 5; x++){
-            testLoc.setX(x);
-            for(int y = yInit; y < yInit + 5; y++){
-                testLoc.setY(y);
-                for(int z = zInit; z < zInit + 5; z++){
-                    testLoc.setZ(z);
-                    testBlock = testLoc.getBlock();
-                    if(testBlock.getType().equals(Material.CHEST) || testBlock.getType().equals(Material.TRAPPED_CHEST)) {
-                        if(!BoltAPI.canUse(((InventoryHolder)testBlock.getState()).getInventory(), (Player) event.getPlayer())) {
-                            event.getPlayer().sendMessage(ChatColor.YELLOW + "you can't do that m8, it's too close to an owned chest");
+        for (int x = xInit - 2; x < xInit + 3; x++) {
+            loc.setX(x);
+            for (int y = yInit - 2; y < yInit + 3; y++) {
+                loc.setY(y);
+                for (int z = zInit - 2; z < zInit + 3; z++) {
+                    loc.setZ(z);
+                    testBlock = loc.getBlock();
+                    if (testBlock.getType().equals(Material.CHEST) || testBlock.getType().equals(Material.TRAPPED_CHEST)) {
+                        if (!BoltAPI.canUse(((InventoryHolder)testBlock.getState()).getInventory(), (Player) event.getPlayer())) {
+                            event.getPlayer().sendMessage(ChatColor.YELLOW + "This block is locked.");
                             event.setCancelled(true);
                             return;
                         }
