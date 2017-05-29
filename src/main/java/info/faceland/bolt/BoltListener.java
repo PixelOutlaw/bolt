@@ -39,7 +39,6 @@ import org.bukkit.event.entity.ItemSpawnEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryMoveItemEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.DoubleChestInventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
@@ -69,6 +68,12 @@ public class BoltListener implements Listener {
 
     @EventHandler(priority = EventPriority.LOWEST)
     public void onInventoryMoveItem(InventoryMoveItemEvent event) {
+        if (event.getInitiator().getHolder() instanceof HopperMinecart) {
+            if (BoltAPI.getLockState(event.getSource()) != BoltAPI.LockState.UNLOCKED) {
+                event.setCancelled(true);
+                return;
+            }
+        }
         ItemStack is = event.getItem();
         if (is == null || is.getType() != Material.PAPER) {
             return;
