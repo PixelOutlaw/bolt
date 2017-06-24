@@ -342,7 +342,9 @@ public class BoltListener implements Listener {
         if (!(event.getPlayer() instanceof Player)) {
             return;
         }
-        if (!(event.getInventory().getHolder() instanceof Hopper || event.getInventory().getHolder() instanceof Furnace)) {
+        if (!(event.getInventory().getHolder() instanceof Hopper || event.getInventory().getHolder() instanceof Furnace ||
+              event.getInventory().getHolder() instanceof ShulkerBox || event.getInventory().getHolder() instanceof BrewingStand ||
+              event.getInventory().getHolder() instanceof Dropper || event.getInventory().getHolder() instanceof Dispenser)) {
             return;
         }
         Location loc = event.getInventory().getLocation();
@@ -350,11 +352,11 @@ public class BoltListener implements Listener {
         int yInit = loc.getBlockY();
         int zInit = loc.getBlockZ();
         Block testBlock;
-        for (int x = xInit - 2; x < xInit + 3; x++) {
+        for (int x = xInit - 3; x < xInit + 4; x++) {
             loc.setX(x);
-            for (int y = yInit - 2; y < yInit + 3; y++) {
+            for (int y = yInit - 3; y < yInit + 4; y++) {
                 loc.setY(y);
-                for (int z = zInit - 2; z < zInit + 3; z++) {
+                for (int z = zInit - 3; z < zInit + 4; z++) {
                     loc.setZ(z);
                     testBlock = loc.getBlock();
                     if (testBlock.getType().equals(Material.CHEST) || testBlock.getType().equals(Material.TRAPPED_CHEST)) {
